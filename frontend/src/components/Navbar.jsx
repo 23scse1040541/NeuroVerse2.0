@@ -1,23 +1,27 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
+import { useAuth } from '../contexts/AuthContext';
 import { Brain, Home, BookOpen, Heart, Target, Sparkles, Users, MessageCircle, LogOut, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
-  const { isAuthenticated, user, logout } = useAuthStore();
+  const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate('/');
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   const navLinks = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
-    { path: '/mood', label: 'Tracking', icon: Heart },
+    { path: '/mood-tracker', label: 'Tracking', icon: Heart },
     { path: '/journal', label: 'Kahaniyan', icon: BookOpen },
     { path: '/goals', label: 'Goals', icon: Target },
     { path: '/mindfulness', label: 'Mindfulness', icon: Sparkles },
@@ -37,7 +41,7 @@ const Navbar = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          {isAuthenticated && (
+          {currentUser && (
             <div className="hidden md:flex items-center space-x-2 border-b border-slate-700/80 pb-1">
               {navLinks.map((link) => {
                 const Icon = link.icon;
@@ -62,14 +66,14 @@ const Navbar = () => {
 
           {/* Right Side */}
           <div className="hidden md:flex items-center space-x-4">
-            {isAuthenticated ? (
+            {currentUser ? (
               <>
                 <Link
                   to="/profile"
                   className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
                 >
                   <User className="w-5 h-5 text-slate-100" />
-                  <span className="text-sm font-medium text-slate-100">{user?.name}</span>
+                  <span className="text-sm font-medium text-slate-100">{currentUser?.displayName || currentUser?.email}</span>
                 </Link>
                 <button
                   onClick={handleLogout}
@@ -117,7 +121,7 @@ const Navbar = () => {
             className="md:hidden bg-slate-950 border-t border-slate-800"
           >
             <div className="px-4 py-4 space-y-2">
-              {isAuthenticated ? (
+              {currentUser ? (
                 <>
                   {navLinks.map((link) => {
                     const Icon = link.icon;

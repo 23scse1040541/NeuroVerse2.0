@@ -20,6 +20,48 @@
       },
       "createdAt": "2025-11-13T04:52:10.401Z",
       "exp": 46
+    },
+    {
+      "id": "2",
+      "name": "Utkarsh Pandey ",
+      "email": "raj7744@gmail.com",
+      "password": "$2a$10$jSTBVRxtXZGoAfVQFxxCbO085UEPQHaDZaU302fUanmsEA2aIk4/a",
+      "role": "user",
+      "avatar": "https://ui-avatars.com/api/?background=8EC5FC&color=fff&name=Utkarsh%20Pandey%20",
+      "bio": "",
+      "preferences": {
+        "notifications": true,
+        "moodReminder": true,
+        "meditationReminder": true
+      },
+      "streaks": {
+        "journalStreak": 0,
+        "moodStreak": 0,
+        "meditationStreak": 0
+      },
+      "exp": 0,
+      "createdAt": "2025-12-12T14:12:58.090Z"
+    },
+    {
+      "id": "2",
+      "name": "fraj",
+      "email": "raj@4411",
+      "password": "$2a$10$qwop.3cMFak2d3zTVlFc.OpMnTvcYIIXEar465TSCQyNYWJUQY2ui",
+      "role": "user",
+      "avatar": "https://ui-avatars.com/api/?background=8EC5FC&color=fff&name=fraj",
+      "bio": "",
+      "preferences": {
+        "notifications": true,
+        "moodReminder": true,
+        "meditationReminder": true
+      },
+      "streaks": {
+        "journalStreak": 0,
+        "moodStreak": 0,
+        "meditationStreak": 0
+      },
+      "exp": 0,
+      "createdAt": "2025-12-12T14:22:43.929Z"
     }
   ],
   "moods": [

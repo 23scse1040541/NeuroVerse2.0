@@ -1,44 +1,41 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaGoogle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
-export default function Signup() {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signup, googleSignIn } = useAuth();
+  const { login, googleSignIn } = useAuth();
   const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
     
-    if (password !== confirmPassword) {
-      return setError('Passwords do not match');
-    }
-
-    if (password.length < 6) {
-      return setError('Password should be at least 6 characters');
+    if (!email || !password) {
+      setError('Please fill in all fields');
+      return;
     }
 
     try {
       setError('');
       setLoading(true);
-      await signup(email, password);
-      toast.success('Account created successfully!');
+      await login(email, password);
+      toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
-      console.error('Signup error:', error);
-      if (error.code === 'auth/email-already-in-use') {
-        setError('An account with this email already exists');
-      } else if (error.code === 'auth/weak-password') {
-        setError('Password should be at least 6 characters');
-      } else if (error.code === 'auth/invalid-email') {
-        setError('Please enter a valid email address');
+      console.error('Login error:', error);
+      if (error.code === 'auth/invalid-credential') {
+        setError('Invalid email or password');
+      } else if (error.code === 'auth/too-many-requests') {
+        setError('Too many failed attempts. Please try again later.');
+      } else if (error.code === 'auth/user-not-found') {
+        setError('No account found with this email');
       } else {
-        setError('Failed to create an account');
+        setError('Failed to log in. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -50,11 +47,12 @@ export default function Signup() {
       setError('');
       setLoading(true);
       await googleSignIn();
-      toast.success('Account created successfully!');
+      toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
       console.error('Google sign in error:', error);
-      setError('Failed to sign up with Google');
+      setError('Failed to sign in with Google');
+    } finally {
       setLoading(false);
     }
   }
@@ -74,13 +72,13 @@ export default function Signup() {
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full mb-4">
               <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
               </svg>
             </div>
             <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-              Join NeuroVerse
+              Welcome to NeuroVerse
             </h2>
-            <p className="mt-2 text-sm text-gray-600">Begin your mental wellness journey today</p>
+            <p className="mt-2 text-sm text-gray-600">Your journey to mental wellness starts here</p>
           </div>
           
           {error && (
@@ -95,11 +93,11 @@ export default function Signup() {
           <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 mb-1">
                   Email Address
                 </label>
                 <input
-                  id="email"
+                  id="email-address"
                   name="email"
                   type="email"
                   autoComplete="email"
@@ -119,51 +117,34 @@ export default function Signup() {
                   id="password"
                   name="password"
                   type="password"
-                  autoComplete="new-password"
+                  autoComplete="current-password"
                   required
                   className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                  placeholder="Create a password (min 6 characters)"
+                  placeholder="Enter your password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              
-              <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700 mb-1">
-                  Confirm Password
-                </label>
-                <input
-                  id="confirm-password"
-                  name="confirm-password"
-                  type="password"
-                  autoComplete="new-password"
-                  required
-                  className="appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition duration-200"
-                  placeholder="Confirm your password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
             </div>
 
-            <div className="flex items-center">
-              <input
-                id="agree-terms"
-                name="agree-terms"
-                type="checkbox"
-                className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
-                required
-              />
-              <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-700">
-                I agree to the{' '}
-                <Link to="/terms" className="text-purple-600 hover:text-purple-500 transition duration-200">
-                  Terms of Service
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <Link to="/forgot-password" className="font-medium text-purple-600 hover:text-purple-500 transition duration-200">
+                  Forgot password?
                 </Link>
-                {' '}and{' '}
-                <Link to="/privacy" className="text-purple-600 hover:text-purple-500 transition duration-200">
-                  Privacy Policy
-                </Link>
-              </label>
+              </div>
             </div>
 
             <div>
@@ -177,7 +158,7 @@ export default function Signup() {
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
-                ) : 'Create Account'}
+                ) : 'Sign In'}
               </button>
             </div>
           </form>
@@ -188,7 +169,7 @@ export default function Signup() {
                 <div className="w-full border-t border-gray-300" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">Or sign up with</span>
+                <span className="px-4 bg-white text-gray-500">Or continue with</span>
               </div>
             </div>
 
@@ -211,9 +192,9 @@ export default function Signup() {
 
           <div className="text-center pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-purple-600 hover:text-purple-500 transition duration-200">
-                Sign in
+              New to NeuroVerse?{' '}
+              <Link to="/signup" className="font-medium text-purple-600 hover:text-purple-500 transition duration-200">
+                Create an account
               </Link>
             </p>
           </div>
@@ -227,3 +208,4 @@ export default function Signup() {
     </div>
   );
 }
+

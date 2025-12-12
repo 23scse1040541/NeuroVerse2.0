@@ -1,11 +1,10 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { useAuthStore } from './store/authStore';
-import { useEffect } from 'react';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Pages
 import HomePage from './pages/HomePage';
-import Login from './pages/Login';
+import Login from './components/auth/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import MoodTracker from './pages/MoodTracker';
@@ -18,16 +17,16 @@ import Feedback from './pages/Feedback';
 import Profile from './pages/Profile';
 import Games from './pages/Games';
 
+// Import styles
+import './styles/auth.css';
+
 // Components
 import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
+import ErrorBoundary from './components/ErrorBoundary';
 
-function App() {
-  const { checkAuth } = useAuthStore();
-
-  useEffect(() => {
-    checkAuth();
-  }, [checkAuth]);
+function AppContent() {
+  const { currentUser } = useAuth();
 
   return (
     <Router>
@@ -37,39 +36,76 @@ function App() {
           position="top-right"
           toastOptions={{
             duration: 3000,
-            style: {
-              background: '#232121ff',
-              color: '#004f7aff',
-              borderRadius: '12px',
-            },
-            success: {
-              iconTheme: {
-                primary: '#76f4c6ff',
-                secondary: '#e79797ff',
-              },
-            },
+            style: {}
           }}
         />
-        <Routes future={{ v7_relativeSplatPath: true }}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          
-          {/* Protected Routes */}
-          <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
-          <Route path="/mood" element={<PrivateRoute><MoodTracker /></PrivateRoute>} />
-          <Route path="/journal" element={<PrivateRoute><Journal /></PrivateRoute>} />
-          <Route path="/goals" element={<PrivateRoute><Goals /></PrivateRoute>} />
-          <Route path="/mindfulness" element={<PrivateRoute><Mindfulness /></PrivateRoute>} />
-          <Route path="/specialists" element={<PrivateRoute><Specialists /></PrivateRoute>} />
-          <Route path="/chatbot" element={<PrivateRoute><Chatbot /></PrivateRoute>} />
-          <Route path="/feedback" element={<PrivateRoute><Feedback /></PrivateRoute>} />
-          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
-          <Route path="/games" element={<PrivateRoute><Games /></PrivateRoute>} />
+        <Routes>
+          <Route path="/" element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
+          <Route path="/login" element={!currentUser ? <ErrorBoundary><Login /></ErrorBoundary> : <Navigate to="/dashboard" />} />
+          <Route path="/signup" element={!currentUser ? <ErrorBoundary><Signup /></ErrorBoundary> : <Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <ErrorBoundary><Dashboard /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/mood-tracker" element={
+            <PrivateRoute>
+              <ErrorBoundary><MoodTracker /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/journal" element={
+            <PrivateRoute>
+              <ErrorBoundary><Journal /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/goals" element={
+            <PrivateRoute>
+              <ErrorBoundary><Goals /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/mindfulness" element={
+            <PrivateRoute>
+              <ErrorBoundary><Mindfulness /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/specialists" element={
+            <PrivateRoute>
+              <ErrorBoundary><Specialists /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/chatbot" element={
+            <PrivateRoute>
+              <ErrorBoundary><Chatbot /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/feedback" element={
+            <PrivateRoute>
+              <ErrorBoundary><Feedback /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/profile" element={
+            <PrivateRoute>
+              <ErrorBoundary><Profile /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="/games" element={
+            <PrivateRoute>
+              <ErrorBoundary><Games /></ErrorBoundary>
+            </PrivateRoute>
+          } />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>
     </Router>
   );
 }
 
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
+}
+ 
 export default App;

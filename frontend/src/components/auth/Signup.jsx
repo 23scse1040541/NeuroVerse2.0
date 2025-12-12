@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { FaGoogle } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 
 export default function Signup() {

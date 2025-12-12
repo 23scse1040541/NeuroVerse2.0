@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
   
   return {
     plugins: [react()],
+    base: mode === 'production' ? '/' : '/',
     define: {
       'process.env': {}
     },
@@ -33,5 +34,9 @@ export default defineConfig(({ mode }) => {
     },
     // Environment variables configuration
     envPrefix: 'VITE_',
+    build: {
+      outDir: 'dist',
+      assetsDir: 'assets'
+    }
   };
 });

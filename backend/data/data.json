@@ -1,0 +1,63 @@
+{
+  "users": [
+    {
+      "id": "2",
+      "name": "Utkarsh Pandey",
+      "email": "utkarshpandeyraj@gmail.com",
+      "password": "$2a$10$2CFRvYmXIPaaoH0jJ.S9puifxyZ77ae4zu8J60NeyaI/Io/ILcELS",
+      "role": "user",
+      "avatar": "https://ui-avatars.com/api/?background=8EC5FC&color=fff&name=Utkarsh%20Pandey",
+      "bio": "",
+      "preferences": {
+        "notifications": true,
+        "moodReminder": true,
+        "meditationReminder": true
+      },
+      "streaks": {
+        "journalStreak": 0,
+        "moodStreak": 0,
+        "meditationStreak": 0
+      },
+      "createdAt": "2025-11-13T04:52:10.401Z",
+      "exp": 46
+    }
+  ],
+  "moods": [
+    {
+      "id": "2",
+      "user": "2",
+      "emotion": "anxious",
+      "intensity": 7,
+      "note": "Average wellbeing score: 2.9 / 5. Detected mood: anxious (7/10).\n\nGrowth tips:\n1. Write down everything on your mind and highlight only the top 1–2 priorities.\n2. Try a 5-minute breathing exercise or grounding technique.\n3. Schedule a tiny break (2–5 minutes) between tasks to reset your mind.",
+      "activities": [],
+      "triggers": [],
+      "date": "2025-11-23T21:37:28.619Z",
+      "createdAt": "2025-11-23T21:37:28.620Z",
+      "updatedAt": "2025-11-23T21:37:28.620Z"
+    },
+    {
+      "id": "2",
+      "user": "2",
+      "emotion": "neutral",
+      "intensity": 5,
+      "note": "Average wellbeing score: 3.5 / 5. Detected mood: neutral (5/10).\n\nGrowth tips:\n1. Protect the parts of your day that already feel okay or good.\n2. Add one small enjoyable activity (music, walk, hobby) to your schedule.\n3. Notice one thing you are grateful for before going to bed.\n4. Time-schedule · Morning: Short energising routine (music, sunlight, or a brief walk) to set the tone for the day.\n5. Time-schedule · Afternoon: Focused work block with one intentional micro-break away from your screen.\n6. Time-schedule · Night: Brief reflection on what went well and 10 minutes of something you enjoy.",
+      "activities": [],
+      "triggers": [],
+      "date": "2025-11-26T08:11:42.804Z",
+      "createdAt": "2025-11-26T08:11:42.804Z",
+      "updatedAt": "2025-11-26T08:11:42.804Z"
+    }
+  ],
+  "journals": [],
+  "goals": [],
+  "feedback": [],
+  "specialists": [],
+  "sequences": {
+    "user": 1,
+    "mood": 1,
+    "journal": 1,
+    "goal": 1,
+    "feedback": 1,
+    "specialist": 1
+  }
+}

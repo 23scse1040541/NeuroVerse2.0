@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 
@@ -25,79 +25,103 @@ import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
-function AppContent() {
-  const { currentUser } = useAuth();
-
+function AppLayout() {
   return (
-    <Router>
-      <div className="min-h-screen">
-        <Navbar />
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {}
-          }}
-        />
-        <Routes>
-          <Route path="/" element={<ErrorBoundary><HomePage /></ErrorBoundary>} />
-          <Route path="/login" element={!currentUser ? <ErrorBoundary><Login /></ErrorBoundary> : <Navigate to="/dashboard" />} />
-          <Route path="/signup" element={!currentUser ? <ErrorBoundary><Signup /></ErrorBoundary> : <Navigate to="/dashboard" />} />
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <ErrorBoundary><Dashboard /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/mood-tracker" element={
-            <PrivateRoute>
-              <ErrorBoundary><MoodTracker /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/journal" element={
-            <PrivateRoute>
-              <ErrorBoundary><Journal /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/goals" element={
-            <PrivateRoute>
-              <ErrorBoundary><Goals /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/mindfulness" element={
-            <PrivateRoute>
-              <ErrorBoundary><Mindfulness /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/specialists" element={
-            <PrivateRoute>
-              <ErrorBoundary><Specialists /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/chatbot" element={
-            <PrivateRoute>
-              <ErrorBoundary><Chatbot /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/feedback" element={
-            <PrivateRoute>
-              <ErrorBoundary><Feedback /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/profile" element={
-            <PrivateRoute>
-              <ErrorBoundary><Profile /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="/games" element={
-            <PrivateRoute>
-              <ErrorBoundary><Games /></ErrorBoundary>
-            </PrivateRoute>
-          } />
-          <Route path="*" element={<Navigate to="/" />} />
-        </Routes>
-      </div>
-    </Router>
+    <div className="min-h-screen">
+      <Navbar />
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {}
+        }}
+      />
+      <Outlet />
+    </div>
   );
+}
+
+function RedirectIfAuthenticated({ children }) {
+  const { currentUser } = useAuth();
+  return !currentUser ? children : <Navigate to="/dashboard" />;
+}
+
+function AppContent() {
+  const router = createBrowserRouter(
+    [
+      {
+        path: '/',
+        element: <AppLayout />,
+        children: [
+          { index: true, element: <ErrorBoundary><HomePage /></ErrorBoundary> },
+          {
+            path: 'login',
+            element: (
+              <RedirectIfAuthenticated>
+                <ErrorBoundary><Login /></ErrorBoundary>
+              </RedirectIfAuthenticated>
+            )
+          },
+          {
+            path: 'signup',
+            element: (
+              <RedirectIfAuthenticated>
+                <ErrorBoundary><Signup /></ErrorBoundary>
+              </RedirectIfAuthenticated>
+            )
+          },
+          {
+            path: 'dashboard',
+            element: <PrivateRoute><ErrorBoundary><Dashboard /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'mood-tracker',
+            element: <PrivateRoute><ErrorBoundary><MoodTracker /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'journal',
+            element: <PrivateRoute><ErrorBoundary><Journal /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'goals',
+            element: <PrivateRoute><ErrorBoundary><Goals /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'mindfulness',
+            element: <PrivateRoute><ErrorBoundary><Mindfulness /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'specialists',
+            element: <PrivateRoute><ErrorBoundary><Specialists /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'chatbot',
+            element: <PrivateRoute><ErrorBoundary><Chatbot /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'feedback',
+            element: <PrivateRoute><ErrorBoundary><Feedback /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'profile',
+            element: <PrivateRoute><ErrorBoundary><Profile /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'games',
+            element: <PrivateRoute><ErrorBoundary><Games /></ErrorBoundary></PrivateRoute>
+          },
+          { path: '*', element: <Navigate to="/" /> }
+        ]
+      }
+    ],
+    {
+      future: {
+        v7_relativeSplatPath: true
+      }
+    }
+  );
+
+  return <RouterProvider router={router} />;
 }
 
 function App() {

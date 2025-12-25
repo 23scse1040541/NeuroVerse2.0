@@ -29,9 +29,18 @@ const MoodTracker = () => {
 
   const fetchMoods = async () => {
     try {
-      const response = await axios.get('/api/mood');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/mood', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
       setMoods(response.data.moods);
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       console.error('Error fetching moods:', error);
     }
   };
@@ -39,6 +48,11 @@ const MoodTracker = () => {
   const handleMicroReflectionComplete = async ({ emotion, intensity, note, trackingType, source, challengeType, helpedBy }) => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to log mood');
+        return;
+      }
       await axios.post('/api/mood', {
         emotion,
         intensity,
@@ -47,10 +61,18 @@ const MoodTracker = () => {
         source,
         challengeType,
         helpedBy,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Mood logged successfully!');
       fetchMoods();
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       toast.error('Failed to log mood');
     } finally {
       setLoading(false);
@@ -60,6 +82,11 @@ const MoodTracker = () => {
   const handleCameraComplete = async ({ emotion, intensity, note, trackingType, source, challengeType, helpedBy }) => {
     setLoading(true);
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to save tracking entry');
+        return;
+      }
       await axios.post('/api/mood', {
         emotion,
         intensity,
@@ -68,10 +95,18 @@ const MoodTracker = () => {
         source,
         challengeType,
         helpedBy,
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Tracking entry saved');
       fetchMoods();
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       toast.error('Failed to save tracking entry');
     } finally {
       setLoading(false);
@@ -80,10 +115,23 @@ const MoodTracker = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/mood/${id}`);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to delete');
+        return;
+      }
+      await axios.delete(`/api/mood/${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Mood deleted');
       fetchMoods();
     } catch (e) {
+      if (e.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       toast.error('Failed to delete');
     }
   };

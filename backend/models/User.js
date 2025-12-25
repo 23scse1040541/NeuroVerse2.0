@@ -2,6 +2,17 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const userSchema = new mongoose.Schema({
+  firebaseUid: {
+    type: String,
+    index: true,
+    unique: true,
+    sparse: true
+  },
+  authProvider: {
+    type: String,
+    enum: ['firebase', 'local'],
+    default: 'local'
+  },
   name: {
     type: String,
     required: [true, 'Please provide a name'],
@@ -17,7 +28,7 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Please provide a password'],
+    required: false,
     minlength: 6,
     select: false
   },
@@ -62,6 +73,10 @@ const userSchema = new mongoose.Schema({
       default: 0
     }
   },
+  exp: {
+    type: Number,
+    default: 0
+  },
   createdAt: {
     type: Date,
     default: Date.now
@@ -70,7 +85,7 @@ const userSchema = new mongoose.Schema({
 
 // Hash password before saving
 userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) {
+  if (!this.password || !this.isModified('password')) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);

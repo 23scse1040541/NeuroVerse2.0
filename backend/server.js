@@ -33,6 +33,9 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin) return callback(null, true);
+      if (process.env.NODE_ENV !== 'production' && origin.endsWith(':3000')) {
+        return callback(null, true);
+      }
       if (allowedOrigins.includes(origin)) return callback(null, true);
       return callback(new Error(`CORS blocked for origin: ${origin}`));
     },

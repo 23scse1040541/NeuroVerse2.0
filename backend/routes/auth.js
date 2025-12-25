@@ -1,60 +1,42 @@
 import express from 'express';
-import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
-  });
-};
-
 // @route   POST /api/auth/signup
 // @desc    Register a new user
 // @access  Public
 router.post('/signup', async (req, res) => {
+  return res.status(410).json({
+    success: false,
+    message: 'This endpoint is deprecated. Use Firebase Authentication on the client and call /api/auth/me with a Firebase ID token.'
+  });
+});
+
+// @route   POST /api/auth/reward
+// @desc    Add EXP rewards for actions/games
+// @access  Private
+router.post('/reward', protect, async (req, res) => {
   try {
-    const { name, email, password, role } = req.body;
+    const { amount = 0 } = req.body || {};
+    const inc = Number(amount) || 0;
 
-    // Check if user exists
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({
-        success: false,
-        message: 'User already exists with this email'
-      });
-    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { $inc: { exp: inc } },
+      { new: true }
+    );
 
-    // Create user
-    const user = await User.create({
-      name,
-      email,
-      password,
-      role: role || 'user',
-      avatar: `https://ui-avatars.com/api/?background=8EC5FC&color=fff&name=${encodeURIComponent(name)}`
-    });
-
-    const token = generateToken(user._id);
-
-    res.status(201).json({
+    return res.status(200).json({
       success: true,
-      message: 'Account created successfully',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar
-      }
+      message: 'Reward applied',
+      exp: user.exp
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      message: 'Error creating user',
+      message: 'Error applying reward',
       error: error.message
     });
   }
@@ -64,56 +46,10 @@ router.post('/signup', async (req, res) => {
 // @desc    Login user
 // @access  Public
 router.post('/login', async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    // Validate input
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password'
-      });
-    }
-
-    // Find user with password field
-    const user = await User.findOne({ email }).select('+password');
-    if (!user) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
-
-    // Check password
-    const isPasswordMatch = await user.comparePassword(password);
-    if (!isPasswordMatch) {
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid credentials'
-      });
-    }
-
-    const token = generateToken(user._id);
-
-    res.status(200).json({
-      success: true,
-      message: 'Login successful',
-      token,
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        avatar: user.avatar
-      }
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: 'Error during login',
-      error: error.message
-    });
-  }
+  return res.status(410).json({
+    success: false,
+    message: 'This endpoint is deprecated. Use Firebase Authentication on the client and call /api/auth/me with a Firebase ID token.'
+  });
 });
 
 // @route   GET /api/auth/me
@@ -126,6 +62,8 @@ router.get('/me', protect, async (req, res) => {
       success: true,
       user: {
         id: user._id,
+        firebaseUid: user.firebaseUid,
+        authProvider: user.authProvider,
         name: user.name,
         email: user.email,
         role: user.role,
@@ -133,6 +71,7 @@ router.get('/me', protect, async (req, res) => {
         bio: user.bio,
         preferences: user.preferences,
         streaks: user.streaks,
+        exp: user.exp,
         createdAt: user.createdAt
       }
     });
@@ -172,6 +111,36 @@ router.put('/update-profile', protect, async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error updating profile',
+      error: error.message
+    });
+  }
+});
+
+// @route   POST /api/auth/sync
+// @desc    Upsert user profile based on Firebase token and optional client profile payload
+// @access  Private
+router.post('/sync', protect, async (req, res) => {
+  try {
+    const { name, avatar } = req.body || {};
+
+    const updateData = {};
+    if (name) updateData.name = name;
+    if (avatar) updateData.avatar = avatar;
+
+    const user = await User.findByIdAndUpdate(req.user._id, updateData, {
+      new: true,
+      runValidators: true
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: 'User synced successfully',
+      user
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Error syncing user',
       error: error.message
     });
   }

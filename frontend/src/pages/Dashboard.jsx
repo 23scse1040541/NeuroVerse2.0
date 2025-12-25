@@ -22,12 +22,18 @@ const Dashboard = () => {
 
   const fetchDashboardData = async (silent = false) => {
     try {
-      const response = await axios.get('/api/users/dashboard');
+      const token = localStorage.getItem('token');
+      const response = await axios.get('/api/users/dashboard', {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
       setDashboardData(response.data.dashboard);
       setLastUpdated(new Date().toISOString());
     } catch (error) {
       try {
-        const moodsRes = await axios.get('/api/mood');
+        const token = localStorage.getItem('token');
+        const moodsRes = await axios.get('/api/mood', {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined
+        });
         const moods = moodsRes.data.moods || [];
         const recent = moods
           .slice()

@@ -29,10 +29,23 @@ const Feedback = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:5000/api/feedback', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to submit feedback');
+        return;
+      }
+      await axios.post('/api/feedback', formData, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       toast.success('Thank you for your feedback!');
       setFormData({ rating: 0, category: 'general', subject: '', message: '' });
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       toast.error('Failed to submit feedback');
     } finally {
       setLoading(false);

@@ -1,5 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from 'firebase/auth';
+import { auth } from '../firebase/config';
 
 const API_URL = '/api';
 const existingToken = localStorage.getItem('token');
@@ -18,13 +20,14 @@ export const useAuthStore = create((set) => ({
   login: async (email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/login`, { email, password });
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      set({ user, token, isAuthenticated: true, isLoading: false });
+      const cred = await signInWithEmailAndPassword(auth, email, password);
+      const idToken = await cred.user.getIdToken();
+
+      localStorage.setItem('token', idToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
+
+      const me = await axios.get(`${API_URL}/auth/me`);
+      set({ user: me.data.user, token: idToken, isAuthenticated: true, isLoading: false });
       return { success: true };
     } catch (error) {
       const message = error.response?.data?.message || 'Login failed';
@@ -37,13 +40,15 @@ export const useAuthStore = create((set) => ({
   signup: async (name, email, password) => {
     set({ isLoading: true, error: null });
     try {
-      const response = await axios.post(`${API_URL}/auth/signup`, { name, email, password });
-      const { token, user } = response.data;
-      
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      set({ user, token, isAuthenticated: true, isLoading: false });
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      const idToken = await cred.user.getIdToken();
+
+      localStorage.setItem('token', idToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${idToken}`;
+
+      await axios.post(`${API_URL}/auth/sync`, { name });
+      const me = await axios.get(`${API_URL}/auth/me`);
+      set({ user: me.data.user, token: idToken, isAuthenticated: true, isLoading: false });
       return { success: true };
     } catch (error) {
       const message = error.response?.data?.message || 'Signup failed';
@@ -56,6 +61,7 @@ export const useAuthStore = create((set) => ({
   logout: () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
+    signOut(auth).catch(() => undefined);
     set({ user: null, token: null, isAuthenticated: false });
   },
 

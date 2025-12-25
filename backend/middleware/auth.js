@@ -1,39 +1,78 @@
-import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { initFirebaseAdmin } from '../utils/firebaseAdmin.js';
 
 export const protect = async (req, res, next) => {
   try {
-    let token;
-
-    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
+    const authHeader = req.headers.authorization || '';
+    if (!authHeader.startsWith('Bearer ')) {
       return res.status(401).json({
         success: false,
         message: 'Not authorized to access this route'
       });
     }
 
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      req.user = await User.findById(decoded.id);
-      
-      if (!req.user) {
-        return res.status(401).json({
-          success: false,
-          message: 'User not found'
-        });
-      }
+    const idToken = authHeader.split(' ')[1];
+    if (!idToken) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized to access this route'
+      });
+    }
 
-      next();
-    } catch (error) {
+    const admin = initFirebaseAdmin();
+
+    let decoded;
+    try {
+      decoded = await admin.auth().verifyIdToken(idToken);
+    } catch (e) {
       return res.status(401).json({
         success: false,
         message: 'Invalid token'
       });
     }
+
+    const firebaseUid = decoded.uid;
+    const email = decoded.email;
+    const name = decoded.name || (email ? email.split('@')[0] : 'User');
+    const avatar = decoded.picture;
+
+    let user = await User.findOne({ firebaseUid });
+
+    if (!user && email) {
+      user = await User.findOne({ email });
+      if (user && !user.firebaseUid) {
+        user.firebaseUid = firebaseUid;
+      }
+    }
+
+    if (!user) {
+      user = await User.create({
+        firebaseUid,
+        name,
+        email: email || `${firebaseUid}@firebase.local`,
+        avatar: avatar || undefined,
+        authProvider: 'firebase'
+      });
+    } else {
+      let shouldSave = false;
+      if (!user.firebaseUid) {
+        user.firebaseUid = firebaseUid;
+        shouldSave = true;
+      }
+      if (email && user.email !== email) {
+        user.email = email;
+        shouldSave = true;
+      }
+      if (avatar && user.avatar !== avatar) {
+        user.avatar = avatar;
+        shouldSave = true;
+      }
+      if (shouldSave) await user.save();
+    }
+
+    req.user = user;
+    req.firebase = decoded;
+    next();
   } catch (error) {
     return res.status(500).json({
       success: false,

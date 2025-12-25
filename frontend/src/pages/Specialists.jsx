@@ -13,7 +13,7 @@ const Specialists = () => {
 
   const fetchSpecialists = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/specialists');
+      const response = await axios.get('/api/specialists');
       setSpecialists(response.data.specialists);
     } catch (error) {
       console.error('Error fetching specialists:', error);

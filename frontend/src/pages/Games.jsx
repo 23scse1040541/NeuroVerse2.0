@@ -6,7 +6,13 @@ import toast from 'react-hot-toast';
 
 const reward = async (amount = 5, reason = 'game_play') => {
   try {
-    await axios.post('/api/auth/reward', { amount, reason });
+    const token = localStorage.getItem('token');
+    if (!token) return;
+    await axios.post(
+      '/api/auth/reward',
+      { amount, reason },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
   } catch {}
 };
 

@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { Target, Plus, Check, Trash2, TrendingUp } from 'lucide-react';
 
+const API_URL = '/api/goals';
+
 const Goals = () => {
   const [goals, setGoals] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -16,14 +18,29 @@ const Goals = () => {
   });
 
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) return;
     fetchGoals();
   }, []);
 
   const fetchGoals = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/goals');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to view goals');
+        return;
+      }
+      const response = await axios.get(API_URL, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
       setGoals(response.data.goals);
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       console.error('Error fetching goals:', error);
     }
   };
@@ -32,7 +49,14 @@ const Goals = () => {
     e.preventDefault();
     
     try {
-      await axios.post('http://localhost:5000/api/goals', formData);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to create a goal');
+        return;
+      }
+      await axios.post(API_URL, formData, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
       toast.success('Goal created!');
       setFormData({ title: '', description: '', category: 'meditation', targetFrequency: 5, frequencyUnit: 'weekly' });
       setShowForm(false);
@@ -44,10 +68,23 @@ const Goals = () => {
 
   const handleProgress = async (goalId) => {
     try {
-      await axios.put(`http://localhost:5000/api/goals/${goalId}/progress`);
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Please log in to update progress');
+        return;
+      }
+      await axios.put(`${API_URL}/${goalId}/progress`, undefined, {
+        headers: token ? { Authorization: `Bearer ${token}` } : undefined
+      });
       toast.success('Progress updated!');
       fetchGoals();
     } catch (error) {
+      if (error.response?.status === 401) {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        toast.error('Session expired. Please log in again.');
+        return;
+      }
       toast.error('Failed to update progress');
     }
   };
@@ -55,10 +92,23 @@ const Goals = () => {
   const handleDelete = async (goalId) => {
     if (window.confirm('Delete this goal?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/goals/${goalId}`);
+        const token = localStorage.getItem('token');
+        if (!token) {
+          toast.error('Please log in to delete a goal');
+          return;
+        }
+        await axios.delete(`${API_URL}/${goalId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : undefined
+        });
         toast.success('Goal deleted');
         fetchGoals();
       } catch (error) {
+        if (error.response?.status === 401) {
+          localStorage.removeItem('token');
+          delete axios.defaults.headers.common['Authorization'];
+          toast.error('Session expired. Please log in again.');
+          return;
+        }
         toast.error('Failed to delete goal');
       }
     }

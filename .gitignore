@@ -5,10 +5,14 @@ node_modules/
 
 # Testing
 /coverage
+backend/test-*.js
 
 # Production
 /build
 /dist
+
+# Frontend build output (monorepo)
+frontend/dist/
 
 # Environment variables
 .env

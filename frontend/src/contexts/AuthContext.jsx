@@ -4,10 +4,12 @@ import {
   signInWithEmailAndPassword, 
   signOut, 
   onAuthStateChanged,
+  onIdTokenChanged,
   GoogleAuthProvider,
   signInWithPopup
 } from 'firebase/auth';
 import { auth } from '../firebase/config';
+import axios from 'axios';
 
 const AuthContext = createContext();
 
@@ -33,12 +35,32 @@ export function AuthProvider({ children }) {
   }
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       setLoading(false);
     });
 
-    return unsubscribe;
+    const unsubscribeToken = onIdTokenChanged(auth, async (user) => {
+      try {
+        if (!user) {
+          localStorage.removeItem('token');
+          delete axios.defaults.headers.common['Authorization'];
+          return;
+        }
+
+        const token = await user.getIdToken();
+        localStorage.setItem('token', token);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      } catch {
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+      }
+    });
+
+    return () => {
+      unsubscribeAuth();
+      unsubscribeToken();
+    };
   }, []);
 
   const value = {

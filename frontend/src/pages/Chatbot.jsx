@@ -67,29 +67,20 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4 relative overflow-hidden">
-      
-      {/* Background */}
-      <div className="pointer-events-none absolute inset-0 opacity-40">
-        <div className="neuro-cosmic-grid w-full h-full" />
-      </div>
-
-      <div className="max-w-4xl mx-auto relative z-10">
-
+    <div className="min-h-screen py-8 px-4">
+      <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <h1 className="text-4xl font-bold gradient-text mb-2 flex items-center">
-            <MessageCircle className="w-10 h-10 mr-3" />
-            Neuroverse AI
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center">
+            <MessageCircle className="w-8 h-8 mr-3 text-cyan-400" />
+            AI Assistant
           </h1>
-          <p className="text-gray-600">
-            Chat with your AI assistant
-          </p>
+          <p className="text-white/60">Chat with your personal wellness companion</p>
         </motion.div>
 
         {/* Chat Box */}
         <div
-          className="card p-0 overflow-hidden flex flex-col mt-6"
+          className="bg-white/10 backdrop-blur-sm rounded-2xl border border-white/20 overflow-hidden flex flex-col"
           style={{ height: "500px" }}
         >
 
@@ -112,7 +103,7 @@ export default function Chatbot() {
                     {/* Avatar */}
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
                       msg.type === "user"
-                        ? "bg-primary"
+                        ? "bg-cyan-500"
                         : "bg-gradient-to-br from-purple-500 to-pink-500"
                     }`}>
                       {msg.type === "user" ? (
@@ -126,13 +117,13 @@ export default function Chatbot() {
                     <div>
                       <div className={`px-4 py-2 rounded-xl ${
                         msg.type === "user"
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 text-gray-800"
+                          ? "bg-cyan-500 text-white"
+                          : "bg-white/10 text-white border border-white/20"
                       }`}>
                         {msg.text}
                       </div>
 
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-white/40 mt-1">
                         {msg.timestamp.toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit"
@@ -147,25 +138,25 @@ export default function Chatbot() {
 
             {/* Loading */}
             {loading && (
-              <p className="text-gray-500">AI is typing...</p>
+              <p className="text-white/50">AI is typing...</p>
             )}
           </div>
 
           {/* Input */}
-          <div className="p-4 border-t border-gray-200 bg-white flex items-center space-x-3">
+          <div className="p-4 border-t border-white/10 bg-white/5 flex items-center space-x-3">
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type your message..."
-              className="flex-1 px-4 py-2 border rounded-lg"
+              className="flex-1 px-4 py-2 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/40 focus:outline-none focus:border-cyan-400 transition-colors"
             />
 
             <button
               onClick={sendMessage}
-              className="btn-primary px-4 py-2"
+              className="p-2 bg-cyan-500 text-white rounded-xl hover:bg-cyan-600 transition-colors"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-5 h-5" />
             </button>
           </div>
 

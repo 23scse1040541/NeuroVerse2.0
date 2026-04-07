@@ -30,7 +30,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 function AppLayout() {
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       <Navbar />
       <Toaster
         position="top-right"
@@ -39,7 +39,9 @@ function AppLayout() {
           style: {}
         }}
       />
-      <Outlet />
+      <main className="pt-24">
+        <Outlet />
+      </main>
     </div>
   );
 }

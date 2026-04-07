@@ -57,14 +57,14 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-indigo-50">
+      <div className="min-h-[60vh] flex items-center justify-center">
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-          className="relative w-20 h-20"
+          className="relative w-16 h-16"
         >
-          <div className="absolute inset-0 border-4 border-indigo-200 rounded-full" />
-          <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent" />
+          <div className="absolute inset-0 border-4 border-white/20 rounded-full" />
+          <div className="absolute inset-0 border-4 border-cyan-400 rounded-full border-t-transparent" />
         </motion.div>
       </div>
     );
@@ -144,7 +144,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-indigo-50 pt-20 pb-8 px-4">
+    <div className="min-h-screen pb-8 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Header with Welcome & Time Filter */}
         <motion.div
@@ -154,32 +154,32 @@ const Dashboard = () => {
         >
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
             <div>
-              <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2">
                 Good {new Date().getHours() < 12 ? 'Morning' : new Date().getHours() < 18 ? 'Afternoon' : 'Evening'},
-                <span className="bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent ml-2">
+                <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent ml-2">
                   {dashboardData?.user?.name || 'Friend'}
                 </span>
               </h1>
-              <p className="text-gray-500">Here's your wellness snapshot for today</p>
+              <p className="text-white/60">Here's your wellness snapshot for today</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex bg-white rounded-xl p-1 shadow-sm border border-gray-100">
+              <div className="flex bg-white/10 backdrop-blur-sm rounded-xl p-1 border border-white/20">
                 {['day', 'week', 'month'].map((range) => (
                   <button
                     key={range}
                     onClick={() => setTimeRange(range)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium capitalize transition-all ${
                       timeRange === range
-                        ? 'bg-indigo-600 text-white shadow-md'
-                        : 'text-gray-600 hover:bg-gray-50'
+                        ? 'bg-cyan-500 text-white shadow-md'
+                        : 'text-white/70 hover:bg-white/10'
                     }`}
                   >
                     {range}
                   </button>
                 ))}
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-3 py-2 rounded-xl shadow-sm border border-gray-100">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <div className="flex items-center gap-2 text-xs text-white/60 bg-white/10 backdrop-blur-sm px-3 py-2 rounded-xl border border-white/20">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>Live</span>
               </div>
             </div>
@@ -236,19 +236,19 @@ const Dashboard = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -4, transition: { duration: 0.2 } }}
-              className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 hover:shadow-lg transition-all"
+              className="bg-white/10 backdrop-blur-sm rounded-2xl p-5 border border-white/20 hover:border-cyan-400/30 hover:shadow-lg hover:shadow-cyan-500/10 transition-all"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center shadow-lg`}>
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
-                <div className={`flex items-center gap-1 text-xs font-medium ${stat.trendUp ? 'text-emerald-600' : 'text-rose-600'}`}>
+                <div className={`flex items-center gap-1 text-xs font-medium ${stat.trendUp ? 'text-emerald-400' : 'text-rose-400'}`}>
                   <ArrowUpRight className="w-3 h-3" />
                   {stat.trend}
                 </div>
               </div>
-              <p className="text-3xl font-bold text-gray-900 mb-1">{stat.value}</p>
-              <p className="text-sm text-gray-500">{stat.label}</p>
+              <p className="text-3xl font-bold text-white mb-1">{stat.value}</p>
+              <p className="text-sm text-white/60">{stat.label}</p>
             </motion.div>
           ))}
         </div>
@@ -260,8 +260,8 @@ const Dashboard = () => {
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-amber-500" />
+          <h2 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+            <Zap className="w-5 h-5 text-cyan-400" />
             Quick Actions
           </h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -270,13 +270,13 @@ const Dashboard = () => {
                 <motion.div
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="group bg-white rounded-xl p-4 border border-gray-100 hover:border-indigo-200 hover:shadow-lg transition-all cursor-pointer"
+                  className="group bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/20 hover:border-cyan-400/30 hover:shadow-lg hover:shadow-cyan-500/10 transition-all cursor-pointer"
                 >
                   <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
                     <action.icon className="w-5 h-5 text-white" />
                   </div>
-                  <p className="font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">{action.label}</p>
-                  <ChevronRight className="w-4 h-4 text-gray-400 mt-2 group-hover:translate-x-1 transition-transform" />
+                  <p className="font-semibold text-white group-hover:text-cyan-400 transition-colors">{action.label}</p>
+                  <ChevronRight className="w-4 h-4 text-white/40 mt-2 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
                 </motion.div>
               </Link>
             ))}
@@ -290,11 +290,11 @@ const Dashboard = () => {
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-indigo-600" />
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-cyan-400" />
                 Weekly Trends
               </h3>
             </div>
@@ -318,12 +318,12 @@ const Dashboard = () => {
             </ResponsiveContainer>
             <div className="flex items-center gap-6 mt-4 text-sm">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-indigo-500" />
-                <span className="text-gray-600">Mood</span>
+                <div className="w-3 h-3 rounded-full bg-cyan-400" />
+                <span className="text-white/70">Mood</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-emerald-500" />
-                <span className="text-gray-600">Energy</span>
+                <div className="w-3 h-3 rounded-full bg-emerald-400" />
+                <span className="text-white/70">Energy</span>
               </div>
             </div>
           </motion.div>
@@ -333,11 +333,11 @@ const Dashboard = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
           >
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                <Activity className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                <Activity className="w-5 h-5 text-purple-400" />
                 Wellness Balance
               </h3>
             </div>
@@ -366,10 +366,10 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <Smile className="w-5 h-5 text-emerald-500" />
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <Smile className="w-5 h-5 text-emerald-400" />
               Mood Distribution
             </h3>
             <ResponsiveContainer width="100%" height={200}>
@@ -394,8 +394,8 @@ const Dashboard = () => {
               {moodDistribution.slice(0, 4).map((mood, i) => (
                 <div key={i} className="flex items-center gap-2 text-sm">
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: mood.color }} />
-                  <span className="text-gray-600">{mood.name}</span>
-                  <span className="text-gray-400 ml-auto">{mood.value}%</span>
+                  <span className="text-white/70">{mood.name}</span>
+                  <span className="text-white/40 ml-auto">{mood.value}%</span>
                 </div>
               ))}
             </div>
@@ -406,13 +406,13 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
-            className="lg:col-span-2 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100"
+            className="lg:col-span-2 bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-2xl p-6 border border-white/20"
           >
             <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 bg-white rounded-xl shadow-sm">
-                <Sparkle className="w-5 h-5 text-indigo-600" />
+              <div className="p-2 bg-white/10 rounded-xl">
+                <Sparkle className="w-5 h-5 text-cyan-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">AI Insights</h3>
+              <h3 className="text-lg font-semibold text-white">AI Insights</h3>
             </div>
             <div className="space-y-4">
               {insights.map((insight, index) => (
@@ -421,18 +421,18 @@ const Dashboard = () => {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.9 + index * 0.1 }}
-                  className="flex items-start gap-4 bg-white rounded-xl p-4 shadow-sm"
+                  className="flex items-start gap-4 bg-white/10 rounded-xl p-4 border border-white/10"
                 >
                   <div className={`p-2 rounded-lg ${
-                    insight.type === 'positive' ? 'bg-emerald-100 text-emerald-600' :
-                    insight.type === 'tip' ? 'bg-amber-100 text-amber-600' :
-                    'bg-indigo-100 text-indigo-600'
+                    insight.type === 'positive' ? 'bg-emerald-500/20 text-emerald-400' :
+                    insight.type === 'tip' ? 'bg-amber-500/20 text-amber-400' :
+                    'bg-cyan-500/20 text-cyan-400'
                   }`}>
                     <insight.icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <p className="font-medium text-gray-900">{insight.message}</p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="font-medium text-white">{insight.message}</p>
+                    <p className="text-sm text-white/50 mt-1">
                       {insight.type === 'positive' ? 'Based on your recent entries' :
                        insight.type === 'tip' ? 'Personalized recommendation' :
                        'Track your progress'}
@@ -450,10 +450,10 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100"
+            className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
           >
-            <h3 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
-              <Clock className="w-5 h-5 text-gray-400" />
+            <h3 className="text-lg font-semibold text-white mb-6 flex items-center gap-2">
+              <Clock className="w-5 h-5 text-white/50" />
               Recent Activity
             </h3>
             <div className="space-y-3">
@@ -466,7 +466,7 @@ const Dashboard = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 1 + index * 0.1 }}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                    className="flex items-center justify-between p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-colors border border-white/10"
                   >
                     <div className="flex items-center gap-4">
                       <div
@@ -476,18 +476,18 @@ const Dashboard = () => {
                         <MoodIcon className="w-6 h-6" style={{ color: moodConfig.color }} />
                       </div>
                       <div>
-                        <p className="font-semibold text-gray-900 capitalize">{mood.emotion}</p>
-                        <p className="text-sm text-gray-500">{format(new Date(mood.date), 'MMM dd, yyyy • h:mm a')}</p>
+                        <p className="font-semibold text-white capitalize">{mood.emotion}</p>
+                        <p className="text-sm text-white/50">{format(new Date(mood.date), 'MMM dd, yyyy • h:mm a')}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="text-right">
-                        <p className="text-sm text-gray-500">Intensity</p>
+                        <p className="text-sm text-white/50">Intensity</p>
                         <p className="font-bold" style={{ color: moodConfig.color }}>
                           {mood.intensity}/10
                         </p>
                       </div>
-                      <ChevronRight className="w-5 h-5 text-gray-300" />
+                      <ChevronRight className="w-5 h-5 text-white/30" />
                     </div>
                   </motion.div>
                 );

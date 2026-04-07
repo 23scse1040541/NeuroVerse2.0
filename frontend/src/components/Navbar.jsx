@@ -47,27 +47,25 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, description: 'Overview & Stats', color: 'from-blue-500 to-indigo-500' },
-    { path: '/mood-tracker', label: 'Tracking', icon: Activity, description: 'Health Analytics', color: 'from-rose-500 to-pink-500' },
-    { path: '/journal', label: 'Kahaniyan', icon: BookHeart, description: 'Personal Stories', color: 'from-amber-500 to-orange-500' },
-    { path: '/goals', label: 'Goals', icon: Target, description: 'Set & Achieve', color: 'from-emerald-500 to-teal-500' },
-    { path: '/mindfulness', label: 'Mindfulness', icon: Sparkles, description: 'Meditate & Relax', color: 'from-violet-500 to-purple-500' },
-    { path: '/games', label: 'Games', icon: Gamepad2, description: 'Brain Training', color: 'from-cyan-500 to-blue-500' },
-    { path: '/specialists', label: 'Connect', icon: Users, description: 'Expert Help', color: 'from-fuchsia-500 to-pink-500' },
-    { path: '/chatbot', label: 'AI Chat', icon: MessageCircle, description: '24/7 Support', color: 'from-indigo-500 to-violet-500' },
+    { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, color: 'from-blue-500 to-indigo-500' },
+    { path: '/mood-tracker', label: 'Track', icon: Activity, color: 'from-rose-500 to-pink-500' },
+    { path: '/journal', label: 'Journal', icon: BookHeart, color: 'from-amber-500 to-orange-500' },
+    { path: '/goals', label: 'Goals', icon: Target, color: 'from-emerald-500 to-teal-500' },
+    { path: '/mindfulness', label: 'Mind', icon: Sparkles, color: 'from-violet-500 to-purple-500' },
+    { path: '/specialists', label: 'Connect', icon: Users, color: 'from-cyan-500 to-blue-500' },
+    { path: '/games', label: 'Games', icon: Gamepad2, color: 'from-cyan-500 to-blue-500' },
+    { path: '/chatbot', label: 'AI', icon: MessageCircle, color: 'from-indigo-500 to-violet-500' },
   ];
 
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled
-            ? 'bg-white/80 backdrop-blur-xl shadow-lg shadow-gray-200/50 border-b border-gray-100'
-            : 'bg-transparent'
+        className={`sticky top-0 z-50 w-full transition-all duration-300 bg-slate-900/95 backdrop-blur-md border-b border-white/10 shadow-lg ${
+          scrolled ? 'shadow-cyan-500/10' : ''
         }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-3 group">
               <motion.div
@@ -75,16 +73,16 @@ const Navbar = () => {
                 whileTap={{ scale: 0.95 }}
                 className="relative"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-80 transition-opacity" />
-                <div className="relative w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
-                  <Brain className="w-6 h-6 text-white" />
+                <div className="absolute inset-0 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-xl blur-lg opacity-60 group-hover:opacity-100 transition-opacity animate-glow" />
+                <div className="relative w-12 h-12 bg-gradient-to-br from-cyan-400 via-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                  <Brain className="w-7 h-7 text-white" />
                 </div>
               </motion.div>
               <div className="flex flex-col">
-                <span className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">
+                <span className="text-2xl font-bold navbar-brand">
                   NeuroVerse
                 </span>
-                <span className="text-[10px] text-gray-400 font-medium tracking-wider uppercase">
+                <span className="text-[10px] text-white/50 font-medium tracking-[0.2em] uppercase">
                   Mental Wellness
                 </span>
               </div>
@@ -92,53 +90,33 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             {currentUser && (
-              <div className="hidden lg:flex items-center space-x-1">
-                {navLinks.map((link) => {
-                  const Icon = link.icon;
-                  const isActive = location.pathname === link.path || location.pathname.startsWith(link.path + '/');
-                  return (
-                    <Link
-                      key={link.path}
-                      to={link.path}
-                      onMouseEnter={() => setActiveHover(link.path)}
-                      onMouseLeave={() => setActiveHover(null)}
-                      className="relative group"
-                    >
-                      <motion.div
-                        whileHover={{ y: -2 }}
-                        whileTap={{ y: 0 }}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 ${
-                          isActive
-                            ? 'text-indigo-600 bg-indigo-50'
-                            : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
-                        }`}
+              <div className="hidden lg:flex items-center justify-center flex-1 mx-4">
+                <div className="flex items-center space-x-1 bg-white/5 rounded-2xl p-1">
+                  {navLinks.map((link) => {
+                    const Icon = link.icon;
+                    const isActive = location.pathname === link.path || location.pathname.startsWith(link.path + '/');
+                    return (
+                      <Link
+                        key={link.path}
+                        to={link.path}
+                        className="relative group"
                       >
                         <motion.div
-                          animate={isActive ? { scale: [1, 1.2, 1] } : {}}
-                          transition={{ duration: 0.5 }}
+                          whileHover={{ y: -1 }}
+                          whileTap={{ y: 0 }}
+                          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                            isActive
+                              ? 'text-white bg-white/15'
+                              : 'text-white/60 hover:text-white hover:bg-white/10'
+                          }`}
                         >
-                          <Icon className={`w-4 h-4 ${isActive ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600'}`} />
+                          <Icon className={`w-4 h-4 ${isActive ? 'text-cyan-400' : ''}`} />
+                          <span className="hidden xl:inline">{link.label}</span>
                         </motion.div>
-                        <span>{link.label}</span>
-                      </motion.div>
-
-                      {/* Hover Tooltip */}
-                      <AnimatePresence>
-                        {activeHover === link.path && !isActive && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 5, scale: 0.95 }}
-                            className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap z-50"
-                          >
-                            {link.description}
-                            <div className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </Link>
-                  );
-                })}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             )}
 
@@ -149,42 +127,42 @@ const Navbar = () => {
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-xl transition-colors"
+                    className="relative p-2 text-white/60 hover:text-white hover:bg-white/10 rounded-xl transition-all"
                   >
                     <Bell className="w-5 h-5" />
-                    <span className="absolute top-1 right-1 w-2 h-2 bg-rose-500 rounded-full animate-pulse" />
+                    <span className="absolute top-1 right-1 w-2 h-2 bg-cyan-400 rounded-full animate-pulse shadow-lg shadow-cyan-400/50" />
                   </motion.button>
 
                   <motion.div
                     whileHover={{ scale: 1.02 }}
-                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-full border border-amber-100"
+                    className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-cyan-500/20 to-purple-500/20 rounded-full border border-cyan-400/30"
                   >
-                    <Zap className="w-4 h-4 text-amber-500" />
-                    <span className="text-sm font-semibold text-amber-700">12</span>
-                    <span className="text-xs text-amber-600">day streak</span>
+                    <Zap className="w-4 h-4 text-cyan-400" />
+                    <span className="text-sm font-semibold text-white">12</span>
+                    <span className="text-xs text-white/60">day streak</span>
                   </motion.div>
 
                   <Link
                     to="/profile"
-                    className="flex items-center space-x-3 px-4 py-2 rounded-xl hover:bg-gray-50 transition-all group"
+                    className="flex items-center space-x-3 px-4 py-2 rounded-xl hover:bg-white/5 transition-all group"
                   >
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-purple-500 flex items-center justify-center">
                       <User className="w-4 h-4 text-white" />
                     </div>
                     <div className="hidden xl:block text-left">
-                      <p className="text-sm font-semibold text-gray-900">
+                      <p className="text-sm font-semibold text-white">
                         {currentUser?.displayName || currentUser?.email?.split('@')[0]}
                       </p>
-                      <p className="text-xs text-gray-400">Pro Member</p>
+                      <p className="text-xs text-white/50">Pro Member</p>
                     </div>
-                    <ChevronRight className="w-4 h-4 text-gray-400 group-hover:translate-x-0.5 transition-transform" />
+                    <ChevronRight className="w-4 h-4 text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition-all" />
                   </Link>
 
                   <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={handleLogout}
-                    className="p-2 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-xl transition-all"
+                    className="p-2 text-white/50 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl transition-all"
                   >
                     <LogOut className="w-5 h-5" />
                   </motion.button>
@@ -193,13 +171,13 @@ const Navbar = () => {
                 <div className="flex items-center space-x-3">
                   <Link
                     to="/login"
-                    className="px-5 py-2 text-gray-700 font-medium hover:text-gray-900 transition-colors"
+                    className="px-5 py-2 text-white/70 font-medium hover:text-white transition-colors"
                   >
                     Sign In
                   </Link>
                   <Link
                     to="/signup"
-                    className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-indigo-500/25 transition-all"
+                    className="px-5 py-2.5 bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-cyan-500/25 transition-all"
                   >
                     Get Started
                   </Link>
@@ -211,7 +189,7 @@ const Navbar = () => {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl hover:bg-gray-100 text-gray-700 transition-colors"
+              className="md:hidden p-2 rounded-xl hover:bg-white/10 text-white transition-all"
             >
               <AnimatePresence mode="wait">
                 {mobileMenuOpen ? (

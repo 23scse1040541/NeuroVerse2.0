@@ -17,7 +17,7 @@ const Card = ({ children, className = '', onClick }) => (
     whileHover={{ scale: 1.02 }}
     whileTap={{ scale: 0.98 }}
     onClick={onClick}
-    className={`bg-white rounded-2xl shadow-lg p-6 border border-gray-100 ${className}`}
+    className={`bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 ${className}`}
   >
     {children}
   </motion.div>
@@ -623,14 +623,18 @@ export default function Games() {
   }
 
   return (
-    <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-slate-50 to-indigo-50">
+    <div className="min-h-screen py-8 px-4">
       <div className="max-w-7xl mx-auto">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-3">
-            <Brain className="w-10 h-10 text-indigo-600" />
-            NeuroVerse IQ Games
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center gap-3">
+            <Brain className="w-8 h-8 text-cyan-400" />
+            Brain Games
           </h1>
-          <p className="text-gray-600 mt-2">Train your brain with high-intensity cognitive challenges</p>
+          <p className="text-white/60 mt-2">Train your brain with cognitive challenges</p>
         </motion.div>
 
         <Card className="mb-8 bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
@@ -707,16 +711,16 @@ export default function Games() {
           </Card>
         </div>
 
-        <Card className="mb-8">
-          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Activity className="w-5 h-5" /> Cognitive Profile
+        <Card className="mb-6">
+          <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+            <Activity className="w-5 h-5 text-cyan-400" /> Cognitive Profile
           </h3>
           <div className="grid md:grid-cols-5 gap-4">
             {Object.entries(cognitiveStats).map(([stat, value]) => (
               <div key={stat}>
                 <div className="flex justify-between text-sm mb-1 capitalize">
-                  <span>{stat}</span>
-                  <span className="font-bold">{value}</span>
+                  <span className="text-white/60">{stat}</span>
+                  <span className="font-bold text-white">{value}</span>
                 </div>
                 <ProgressBar value={value} max={100} color={
                   stat === 'logic' ? 'indigo' :
@@ -729,28 +733,28 @@ export default function Games() {
           </div>
         </Card>
 
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <Gamepad2 className="w-6 h-6" /> Choose Your Challenge
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2 text-white">
+          <Gamepad2 className="w-6 h-6 text-cyan-400" /> Choose Your Challenge
         </h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Object.values(GAMES).slice(0, 3).map((game) => (
             <motion.div key={game.id} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Card onClick={() => startGame(game.id)} className="h-full cursor-pointer hover:shadow-xl">
+              <Card onClick={() => startGame(game.id)} className="h-full cursor-pointer hover:border-cyan-400/30">
                 <div className="flex items-start justify-between mb-4">
                   <span className="text-4xl">{game.icon}</span>
                   <span className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${
-                    game.category === 'logic' ? 'bg-indigo-100 text-indigo-700' :
-                    game.category === 'memory' ? 'bg-purple-100 text-purple-700' :
-                    'bg-green-100 text-green-700'
+                    game.category === 'logic' ? 'bg-cyan-500/20 text-cyan-400' :
+                    game.category === 'memory' ? 'bg-purple-500/20 text-purple-400' :
+                    'bg-emerald-500/20 text-emerald-400'
                   }`}>
                     {game.category}
                   </span>
                 </div>
-                <h3 className="text-xl font-bold text-gray-800 mb-2">{game.name}</h3>
-                <p className="text-gray-600 text-sm mb-4">{game.description}</p>
+                <h3 className="text-xl font-bold text-white mb-2">{game.name}</h3>
+                <p className="text-white/60 text-sm mb-4">{game.description}</p>
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-500">{game.difficultyLevels.length} levels</span>
-                  <ChevronRight className="w-5 h-5 text-indigo-600" />
+                  <span className="text-white/40">{game.difficultyLevels.length} levels</span>
+                  <ChevronRight className="w-5 h-5 text-cyan-400" />
                 </div>
               </Card>
             </motion.div>
@@ -758,8 +762,8 @@ export default function Games() {
         </div>
 
         <Card className="mt-8">
-          <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-            <Award className="w-5 h-5" /> Achievements
+          <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+            <Award className="w-5 h-5 text-cyan-400" /> Achievements
           </h3>
           <div className="flex flex-wrap gap-3">
             {BADGES.slice(0, 6).map((badge) => {
@@ -768,12 +772,12 @@ export default function Games() {
                 <div
                   key={badge.id}
                   className={`flex items-center gap-2 px-4 py-2 rounded-full ${
-                    earned ? 'bg-yellow-100 border-2 border-yellow-400' : 'bg-gray-100 opacity-50'
+                    earned ? 'bg-yellow-500/20 border-2 border-yellow-400/50' : 'bg-white/10 opacity-50'
                   }`}
                 >
                   <span className="text-xl">{badge.icon}</span>
                   <div>
-                    <div className="font-semibold text-sm">{badge.name}</div>
+                    <div className="font-semibold text-sm text-white">{badge.name}</div>
                   </div>
                 </div>
               );

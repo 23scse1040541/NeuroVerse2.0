@@ -1,39 +1,52 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Send, Sparkles } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Send, Sparkles, CheckCircle2, Circle, ArrowRight, Brain, Heart, Zap, Moon, Sun, Activity, Smile, Frown, Meh } from 'lucide-react';
+
+const questionIcons = {
+  energy: Zap,
+  mood: Smile,
+  stress: Activity,
+  anxiety: Frown,
+  focus: Brain,
+  sleep: Moon,
+  selfTalk: Heart,
+  connection: Sun,
+  enjoyment: Sparkles,
+  overwhelm: Meh,
+};
 
 const QUESTIONS = [
   {
     id: 'energy',
     text: 'How is your energy level today?',
     options: [
-      { value: 1, label: 'Very low' },
-      { value: 2, label: 'Low' },
-      { value: 3, label: 'Okay' },
-      { value: 4, label: 'Good' },
-      { value: 5, label: 'Very high' },
+      { value: 1, label: 'Very low', emoji: '😴' },
+      { value: 2, label: 'Low', emoji: '😌' },
+      { value: 3, label: 'Okay', emoji: '😐' },
+      { value: 4, label: 'Good', emoji: '💪' },
+      { value: 5, label: 'Very high', emoji: '⚡' },
     ],
   },
   {
     id: 'mood',
     text: 'Overall, how would you rate your mood?',
     options: [
-      { value: 1, label: 'Very low / down' },
-      { value: 2, label: 'Low' },
-      { value: 3, label: 'Neutral' },
-      { value: 4, label: 'Pretty good' },
-      { value: 5, label: 'Great' },
+      { value: 1, label: 'Very low / down', emoji: '😢' },
+      { value: 2, label: 'Low', emoji: '😔' },
+      { value: 3, label: 'Neutral', emoji: '😐' },
+      { value: 4, label: 'Pretty good', emoji: '🙂' },
+      { value: 5, label: 'Great', emoji: '😄' },
     ],
   },
   {
     id: 'stress',
     text: 'How stressed do you feel?',
     options: [
-      { value: 5, label: 'Extremely stressed' },
-      { value: 4, label: 'Quite stressed' },
-      { value: 3, label: 'Somewhat stressed' },
-      { value: 2, label: 'A little stressed' },
-      { value: 1, label: 'Not stressed' },
+      { value: 5, label: 'Extremely stressed', emoji: '🤯' },
+      { value: 4, label: 'Quite stressed', emoji: '😰' },
+      { value: 3, label: 'Somewhat stressed', emoji: '😓' },
+      { value: 2, label: 'A little stressed', emoji: '😅' },
+      { value: 1, label: 'Not stressed', emoji: '😌' },
     ],
     invert: true,
   },
@@ -41,11 +54,11 @@ const QUESTIONS = [
     id: 'anxiety',
     text: 'How anxious or worried have you felt today?',
     options: [
-      { value: 5, label: 'Almost all day' },
-      { value: 4, label: 'Often' },
-      { value: 3, label: 'Sometimes' },
-      { value: 2, label: 'Rarely' },
-      { value: 1, label: 'Not at all' },
+      { value: 5, label: 'Almost all day', emoji: '😰' },
+      { value: 4, label: 'Often', emoji: '😥' },
+      { value: 3, label: 'Sometimes', emoji: '😟' },
+      { value: 2, label: 'Rarely', emoji: '🙂' },
+      { value: 1, label: 'Not at all', emoji: '😄' },
     ],
     invert: true,
   },
@@ -53,66 +66,66 @@ const QUESTIONS = [
     id: 'focus',
     text: 'How easy is it to focus on tasks?',
     options: [
-      { value: 1, label: 'Very hard to focus' },
-      { value: 2, label: 'Hard' },
-      { value: 3, label: 'Okay' },
-      { value: 4, label: 'Easy' },
-      { value: 5, label: 'Very easy' },
+      { value: 1, label: 'Very hard to focus', emoji: '🤯' },
+      { value: 2, label: 'Hard', emoji: '😵‍💫' },
+      { value: 3, label: 'Okay', emoji: '🤔' },
+      { value: 4, label: 'Easy', emoji: '🎯' },
+      { value: 5, label: 'Very easy', emoji: '🧠' },
     ],
   },
   {
     id: 'sleep',
     text: 'How rested do you feel from your recent sleep?',
     options: [
-      { value: 1, label: 'Very tired' },
-      { value: 2, label: 'Tired' },
-      { value: 3, label: 'Okay' },
-      { value: 4, label: 'Rested' },
-      { value: 5, label: 'Very rested' },
+      { value: 1, label: 'Very tired', emoji: '😫' },
+      { value: 2, label: 'Tired', emoji: '🥱' },
+      { value: 3, label: 'Okay', emoji: '😐' },
+      { value: 4, label: 'Rested', emoji: '😊' },
+      { value: 5, label: 'Very rested', emoji: '✨' },
     ],
   },
   {
     id: 'selfTalk',
     text: 'How kind has your self-talk been today?',
     options: [
-      { value: 1, label: 'Very critical' },
-      { value: 2, label: 'Mostly critical' },
-      { value: 3, label: 'Mixed' },
-      { value: 4, label: 'Mostly kind' },
-      { value: 5, label: 'Very kind and supportive' },
+      { value: 1, label: 'Very critical', emoji: '💔' },
+      { value: 2, label: 'Mostly critical', emoji: '😤' },
+      { value: 3, label: 'Mixed', emoji: '🤷' },
+      { value: 4, label: 'Mostly kind', emoji: '💚' },
+      { value: 5, label: 'Very kind', emoji: '💖' },
     ],
   },
   {
     id: 'connection',
     text: 'How connected do you feel to people around you?',
     options: [
-      { value: 1, label: 'Very isolated' },
-      { value: 2, label: 'Somewhat isolated' },
-      { value: 3, label: 'Okay' },
-      { value: 4, label: 'Connected' },
-      { value: 5, label: 'Very connected' },
+      { value: 1, label: 'Very isolated', emoji: '😞' },
+      { value: 2, label: 'Somewhat isolated', emoji: '😔' },
+      { value: 3, label: 'Okay', emoji: '😐' },
+      { value: 4, label: 'Connected', emoji: '🤝' },
+      { value: 5, label: 'Very connected', emoji: '💕' },
     ],
   },
   {
     id: 'enjoyment',
     text: 'How much have you enjoyed things today?',
     options: [
-      { value: 1, label: 'Not at all' },
-      { value: 2, label: 'A little' },
-      { value: 3, label: 'Somewhat' },
-      { value: 4, label: 'Quite a bit' },
-      { value: 5, label: 'A lot' },
+      { value: 1, label: 'Not at all', emoji: '😑' },
+      { value: 2, label: 'A little', emoji: '🙂' },
+      { value: 3, label: 'Somewhat', emoji: '😊' },
+      { value: 4, label: 'Quite a bit', emoji: '😄' },
+      { value: 5, label: 'A lot', emoji: '🥳' },
     ],
   },
   {
     id: 'overwhelm',
     text: 'How overwhelmed do you feel by responsibilities right now?',
     options: [
-      { value: 5, label: 'Extremely overwhelmed' },
-      { value: 4, label: 'Quite overwhelmed' },
-      { value: 3, label: 'Somewhat' },
-      { value: 2, label: 'A little' },
-      { value: 1, label: 'Not overwhelmed' },
+      { value: 5, label: 'Extremely overwhelmed', emoji: '😵' },
+      { value: 4, label: 'Quite overwhelmed', emoji: '😰' },
+      { value: 3, label: 'Somewhat', emoji: '😓' },
+      { value: 2, label: 'A little', emoji: '😅' },
+      { value: 1, label: 'Not overwhelmed', emoji: '💪' },
     ],
     invert: true,
   },
@@ -260,80 +273,171 @@ function QuestionSurveyCard({ onComplete, loading }) {
     setAnswers({});
   };
 
+  const answeredCount = Object.keys(answers).length;
+  const progress = (answeredCount / QUESTIONS.length) * 100;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="border border-gray-200 rounded-2xl bg-white/80 shadow-sm p-4 md:p-5 space-y-4"
+      className="space-y-6"
     >
-      <div className="flex items-center justify-between mb-2">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-gray-400 mb-1">Question-based tracking</p>
-          <h3 className="text-lg font-semibold text-gray-800">10-question wellbeing check</h3>
-          <p className="text-xs text-gray-500 mt-1">Answer to get an automatic mood summary and growth tips.</p>
-        </div>
-        <div className="hidden md:flex items-center gap-1 text-xs text-primary/70">
-          <Sparkles className="w-3 h-3" />
-          <span>Auto analysis</span>
-        </div>
-      </div>
-
-      <div className="space-y-4 max-h-[360px] overflow-y-auto pr-1">
-        {QUESTIONS.map((q, index) => (
-          <div key={q.id} className="border border-gray-100 rounded-xl p-3 bg-white/70">
-            <p className="text-xs text-gray-400 mb-1">Q{index + 1}</p>
-            <p className="text-sm font-medium text-gray-800 mb-2">{q.text}</p>
-            <div className="flex flex-wrap gap-2">
-              {q.options.map((opt) => {
-                const active = answers[q.id] === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    onClick={() => handleChange(q.id, opt.value)}
-                    className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
-                      active
-                        ? 'bg-primary text-white border-primary shadow-sm'
-                        : 'bg-white text-gray-700 border-gray-200 hover:border-primary/50 hover:text-primary'
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
+      {/* Progress Bar */}
+      <div className="bg-white/5 rounded-full p-1 border border-white/10">
+        <div className="flex items-center justify-between px-3 py-2">
+          <div className="flex items-center gap-3 flex-1">
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold text-cyan-400">{answeredCount}</span>
+              <span className="text-white/40">/</span>
+              <span className="text-white/40">{QUESTIONS.length}</span>
+            </div>
+            <div className="flex-1 max-w-xs h-2 bg-white/10 rounded-full overflow-hidden">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.5, ease: 'easeOut' }}
+              />
             </div>
           </div>
-        ))}
+          <span className="text-sm text-white/60 ml-4">
+            {progress === 100 ? 'Ready to submit!' : `${Math.round(progress)}% complete`}
+          </span>
+        </div>
       </div>
 
-      <button
+      {/* Questions Grid */}
+      <div className="grid gap-4">
+        {QUESTIONS.map((q, index) => {
+          const QuestionIcon = questionIcons[q.id] || Circle;
+          const isAnswered = answers[q.id];
+          
+          return (
+            <motion.div 
+              key={q.id} 
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.05 }}
+              className={`rounded-2xl p-5 border transition-all duration-300 ${
+                isAnswered 
+                  ? 'bg-white/10 border-cyan-400/30' 
+                  : 'bg-white/5 border-white/10 hover:border-white/20'
+              }`}
+            >
+              <div className="flex items-start gap-4">
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+                  isAnswered 
+                    ? 'bg-cyan-500/20 text-cyan-400' 
+                    : 'bg-white/10 text-white/40'
+                }`}>
+                  {isAnswered ? <CheckCircle2 className="w-5 h-5" /> : <QuestionIcon className="w-5 h-5" />}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-xs uppercase tracking-wider text-white/40">Q{index + 1}</span>
+                    {isAnswered && <span className="text-xs text-cyan-400 font-medium">Answered</span>}
+                  </div>
+                  <p className="text-white font-medium mb-4">{q.text}</p>
+                  
+                  <div className="flex flex-wrap gap-2">
+                    {q.options.map((opt) => {
+                      const active = answers[q.id] === opt.value;
+                      return (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          onClick={() => handleChange(q.id, opt.value)}
+                          className={`group flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm border transition-all ${
+                            active
+                              ? 'bg-cyan-500 text-white border-cyan-500 shadow-lg shadow-cyan-500/20'
+                              : 'bg-white/5 text-white/70 border-white/10 hover:bg-white/10 hover:border-white/30'
+                          }`}
+                        >
+                          <span className="text-lg">{opt.emoji}</span>
+                          <span>{opt.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      {/* Submit Button */}
+      <motion.button
         type="button"
         disabled={!allAnswered || loading}
         onClick={handleSubmit}
-        className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+        whileHover={allAnswered ? { scale: 1.02 } : {}}
+        whileTap={allAnswered ? { scale: 0.98 } : {}}
+        className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-semibold text-lg transition-all ${
+          allAnswered
+            ? 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/30'
+            : 'bg-white/10 text-white/40 cursor-not-allowed'
+        }`}
       >
         {loading ? (
-          <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white" />
+          <motion.div 
+            className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+          />
         ) : (
           <>
-            <Send className="w-4 h-4" />
-            <span className="text-sm">Submit & auto-track mood</span>
+            {allAnswered ? (
+              <>
+                <Sparkles className="w-5 h-5" />
+                Generate Mood Analysis
+                <ArrowRight className="w-5 h-5" />
+              </>
+            ) : (
+              <>
+                <Circle className="w-5 h-5" />
+                Answer all questions to continue
+              </>
+            )}
           </>
         )}
-      </button>
+      </motion.button>
 
-      {result && (
-        <div className="mt-4 border border-primary/20 bg-primary/5 rounded-xl p-3 space-y-2 text-sm text-gray-800">
-          <p className="font-semibold">Summary</p>
-          <p className="text-gray-700 text-sm">{result.summary}</p>
-          <p className="font-semibold mt-2">Growth tips</p>
-          <ul className="list-disc list-inside text-xs text-gray-700 space-y-1">
-            {result.tips.map((tip, idx) => (
-              <li key={idx}>{tip}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {/* Results */}
+      <AnimatePresence>
+        {result && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            className="bg-gradient-to-br from-cyan-500/10 to-purple-500/10 rounded-2xl p-6 border border-cyan-400/20"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+                <Brain className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-white">Analysis Complete</h3>
+                <p className="text-cyan-400">{result.summary}</p>
+              </div>
+            </div>
+            
+            <div className="space-y-3">
+              <h4 className="text-sm font-semibold text-white/80 uppercase tracking-wider">Growth Tips</h4>
+              <div className="grid gap-2">
+                {result.tips.slice(0, 5).map((tip, idx) => (
+                  <div key={idx} className="flex items-start gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                    <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-xs font-bold shrink-0">
+                      {idx + 1}
+                    </span>
+                    <p className="text-sm text-white/80">{tip}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

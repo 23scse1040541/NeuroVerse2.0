@@ -129,21 +129,18 @@ const Mindfulness = () => {
   }, [breathingOpen, breathingMode]);
 
   return (
-    <div className="min-h-screen py-8 px-4 relative overflow-hidden">
-      <div className="pointer-events-none absolute inset-0 opacity-40">
-        <div className="neuro-cosmic-grid w-full h-full" />
-      </div>
-      <div className="max-w-7xl mx-auto relative z-10">
+    <div className="min-h-screen py-8 px-4">
+      <div className="max-w-7xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-4xl font-bold gradient-text mb-2 flex items-center">
-            <Sparkles className="w-10 h-10 mr-3" />
+          <h1 className="text-3xl lg:text-4xl font-bold text-white mb-2 flex items-center">
+            <Sparkles className="w-8 h-8 mr-3 text-cyan-400" />
             Mindfulness Hub
           </h1>
-          <p className="text-gray-600">Use music, relaxation exercises, and healthy time-schedules to support your emotions.</p>
+          <p className="text-white/60">Use music, relaxation exercises, and healthy time-schedules to support your emotions.</p>
         </motion.div>
 
         {/* Daily Quote */}
@@ -151,13 +148,13 @@ const Mindfulness = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="card neuro-hologram-hover mb-8 bg-gradient-to-r from-primary/10 to-purple-100/50 border-2 border-primary/20"
+          className="bg-gradient-to-r from-cyan-500/10 to-purple-500/10 rounded-2xl p-6 border border-white/20 mb-8"
         >
           <div className="text-center py-4">
-            <p className="text-2xl font-serif italic text-gray-800 mb-3">
+            <p className="text-2xl font-serif italic text-white mb-3">
               "{quotes[Math.floor(Math.random() * quotes.length)].text}"
             </p>
-            <p className="text-sm text-gray-600">- {quotes[Math.floor(Math.random() * quotes.length)].author}</p>
+            <p className="text-sm text-white/50">- {quotes[Math.floor(Math.random() * quotes.length)].author}</p>
           </div>
         </motion.div>
 
@@ -168,8 +165,8 @@ const Mindfulness = () => {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <Volume2 className="w-6 h-6 mr-2 text-primary" />
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+            <Volume2 className="w-6 h-6 mr-2 text-cyan-400" />
             Music for your mind
           </h2>
           
@@ -222,8 +219,8 @@ const Mindfulness = () => {
           transition={{ delay: 0.4 }}
           className="mb-8"
         >
-          <h2 className="text-2xl font-bold mb-6 flex items-center">
-            <Heart className="w-6 h-6 mr-2 text-pink-500" />
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center">
+            <Heart className="w-6 h-6 mr-2 text-rose-400" />
             Relaxation Exercises
           </h2>
           
@@ -234,12 +231,12 @@ const Mindfulness = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 * index }}
-                className="card neuro-hologram-hover hover:shadow-xl transition-shadow"
+                className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-cyan-400/30 transition-all"
               >
                 <div className="text-5xl mb-4 text-center">{exercise.icon}</div>
-                <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">{exercise.name}</h3>
-                <p className="text-gray-600 text-center">{exercise.description}</p>
-                <button className="mt-4 w-full btn-secondary" onClick={() => openBreathing(exercise)}>
+                <h3 className="text-xl font-bold text-white mb-3 text-center">{exercise.name}</h3>
+                <p className="text-white/60 text-center">{exercise.description}</p>
+                <button className="mt-4 w-full px-4 py-2 bg-white/10 text-white border border-white/20 rounded-xl hover:bg-white/20 transition-all" onClick={() => openBreathing(exercise)}>
                   Try Now
                 </button>
               </motion.div>
@@ -252,50 +249,50 @@ const Mindfulness = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="card"
+          className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20"
         >
-          <h2 className="text-2xl font-bold mb-6">Time-schedule by emotion</h2>
+          <h2 className="text-2xl font-bold text-white mb-6">Time-schedule by emotion</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {[{
               emotion: 'Sad / low mood',
               key: 'sad',
-              color: 'from-blue-100 to-indigo-100',
+              color: 'from-blue-500/30 to-indigo-500/30',
               morning: 'Slow start with gentle movement and no heavy decisions.',
               afternoon: 'One small task and a 5-minute emotional check-in.',
               night: 'Wind-down with low light, calm music, and minimal screens.',
             }, {
               emotion: 'Anxious / overwhelmed',
               key: 'anxious',
-              color: 'from-yellow-100 to-orange-100',
+              color: 'from-amber-500/30 to-orange-500/30',
               morning: 'Breathing or grounding before opening apps and messages.',
               afternoon: 'Limit to 1–2 core priorities with micro-breaks.',
               night: 'Light stretch, breathing audio, and writing worries out of your head.',
             }, {
               emotion: 'Neutral / okay',
               key: 'neutral',
-              color: 'from-slate-100 to-emerald-100',
+              color: 'from-slate-500/30 to-emerald-500/30',
               morning: 'Short energising routine (music, sunlight, or a walk).',
               afternoon: 'Focused work block plus one intentional mindful break.',
               night: 'Reflect on one good thing and do a short enjoyable activity.',
             }, {
               emotion: 'Happy / excited',
               key: 'happy',
-              color: 'from-pink-100 to-purple-100',
+              color: 'from-pink-500/30 to-purple-500/30',
               morning: 'Lock in your mood with gratitude or fun music.',
               afternoon: 'Use your energy on meaningful work or kindness.',
               night: 'Celebrate a win and allow yourself a relaxed or early bedtime.',
             }].map((plan, index) => (
               <div
                 key={plan.key}
-                className="p-4 rounded-2xl bg-gradient-to-br from-white to-gray-50 border border-gray-200"
+                className="p-4 rounded-2xl bg-white/5 border border-white/10"
               >
-                <p className="text-xs uppercase tracking-[0.18em] text-gray-400 mb-1">Schedule</p>
-                <p className="text-sm font-semibold text-gray-800 mb-2">{plan.emotion}</p>
+                <p className="text-xs uppercase tracking-[0.18em] text-white/40 mb-1">Schedule</p>
+                <p className="text-sm font-semibold text-white mb-2">{plan.emotion}</p>
                 <div className={`mb-3 h-1.5 rounded-full bg-gradient-to-r ${plan.color}`} />
-                <div className="space-y-2 text-xs text-gray-700">
-                  <p><span className="font-semibold">Morning:</span> {plan.morning}</p>
-                  <p><span className="font-semibold">Afternoon:</span> {plan.afternoon}</p>
-                  <p><span className="font-semibold">Night:</span> {plan.night}</p>
+                <div className="space-y-2 text-xs text-white/60">
+                  <p><span className="font-semibold text-white/80">Morning:</span> {plan.morning}</p>
+                  <p><span className="font-semibold text-white/80">Afternoon:</span> {plan.afternoon}</p>
+                  <p><span className="font-semibold text-white/80">Night:</span> {plan.night}</p>
                 </div>
               </div>
             ))}
@@ -303,20 +300,20 @@ const Mindfulness = () => {
         </motion.div>
         {breathingOpen && (
           <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl relative">
-              <button className="absolute top-3 right-3 p-2 rounded-lg hover:bg-gray-100" onClick={() => setBreathingOpen(false)}>
+            <div className="bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl relative border border-white/20">
+              <button className="absolute top-3 right-3 p-2 rounded-lg hover:bg-white/10 text-white" onClick={() => setBreathingOpen(false)}>
                 <X className="w-5 h-5" />
               </button>
-              <h3 className="text-2xl font-bold text-center mb-2">{breathingMode?.name || 'Breathing'}</h3>
-              <p className="text-center text-gray-600 mb-6">Follow the rhythm</p>
+              <h3 className="text-2xl font-bold text-center mb-2 text-white">{breathingMode?.name || 'Breathing'}</h3>
+              <p className="text-center text-white/60 mb-6">Follow the rhythm</p>
               <div className="flex flex-col items-center">
                 <motion.div
                   animate={{ scale }}
                   transition={{ duration: 1.0 }}
-                  className="w-40 h-40 bg-gradient-to-br from-primary to-purple-500 rounded-full mb-6"
+                  className="w-40 h-40 bg-gradient-to-br from-cyan-400 to-purple-500 rounded-full mb-6"
                 />
-                <div className="text-xl font-semibold mb-2">{breathStep}</div>
-                <p className="text-gray-500">Breathe with the animation</p>
+                <div className="text-xl font-semibold mb-2 text-white">{breathStep}</div>
+                <p className="text-white/50">Breathe with the animation</p>
               </div>
             </div>
           </div>

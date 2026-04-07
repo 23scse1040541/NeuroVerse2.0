@@ -46,7 +46,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-16 px-4 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800">
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800">
       {/* Background Elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-cyan-500/20 rounded-full filter blur-3xl animate-pulse" />
@@ -134,7 +134,7 @@ const Login = () => {
               </motion.div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               {/* Email Field */}
               <div>
                 <label className="block text-sm font-medium text-white/80 mb-2">
@@ -149,7 +149,7 @@ const Login = () => {
                       setEmail(e.target.value);
                       if (errors.email) setErrors({ ...errors, email: null });
                     }}
-                    className={`w-full pl-12 pr-4 py-4 bg-white/5 border rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full pl-12 pr-4 py-3 bg-white/5 border rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 transition-all ${
                       errors.email ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : 'border-white/20 focus:border-cyan-400 focus:ring-cyan-400/20'
                     }`}
                     placeholder="your@email.com"
@@ -174,7 +174,7 @@ const Login = () => {
                       setPassword(e.target.value);
                       if (errors.password) setErrors({ ...errors, password: null });
                     }}
-                    className={`w-full pl-12 pr-12 py-4 bg-white/5 border rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 transition-all ${
+                    className={`w-full pl-12 pr-12 py-3 bg-white/5 border rounded-xl text-white placeholder-white/40 focus:outline-none focus:ring-2 transition-all ${
                       errors.password ? 'border-red-400 focus:border-red-400 focus:ring-red-400/20' : 'border-white/20 focus:border-cyan-400 focus:ring-cyan-400/20'
                     }`}
                     placeholder="Enter your password"

@@ -16,8 +16,11 @@ import Chatbot from './pages/Chatbot';
 import Feedback from './pages/Feedback';
 import Profile from './pages/Profile';
 import Games from './pages/Games';
+import AITracking from './pages/AITracking';
+import MentalHealth from './pages/MentalHealth';
 
 // Import styles
+import './styles/design-system.css';
 import './styles/auth.css';
 
 // Components
@@ -109,6 +112,14 @@ function AppContent() {
           {
             path: 'games',
             element: <PrivateRoute><ErrorBoundary><Games /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'ai-tracking',
+            element: <PrivateRoute><ErrorBoundary><AITracking /></ErrorBoundary></PrivateRoute>
+          },
+          {
+            path: 'mental-health',
+            element: <PrivateRoute><ErrorBoundary><MentalHealth /></ErrorBoundary></PrivateRoute>
           },
           { path: '*', element: <Navigate to="/" /> }
         ]

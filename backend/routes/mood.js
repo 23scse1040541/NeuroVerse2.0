@@ -9,12 +9,28 @@ const router = express.Router();
 // @access  Private
 router.post('/', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const { emotion, intensity, note, trackingType, source, challengeType, helpedBy } = req.body;
+
+    // Validate required fields
+    if (!emotion) {
+      return res.status(400).json({
+        success: false,
+        message: 'Emotion is required'
+      });
+    }
 
     const mood = await Mood.create({
       user: req.user._id,
       emotion,
-      intensity,
+      intensity: intensity || 5,
       note,
       trackingType,
       source,
@@ -28,6 +44,7 @@ router.post('/', protect, async (req, res) => {
       mood
     });
   } catch (error) {
+    console.error('Error creating mood:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating mood entry',
@@ -41,6 +58,14 @@ router.post('/', protect, async (req, res) => {
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const { startDate, endDate, limit = 50 } = req.query;
 
     let query = { user: req.user._id };
@@ -61,6 +86,7 @@ router.get('/', protect, async (req, res) => {
       moods
     });
   } catch (error) {
+    console.error('Error fetching moods:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching mood entries',
@@ -74,6 +100,14 @@ router.get('/', protect, async (req, res) => {
 // @access  Private
 router.get('/analytics', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const { period = '30' } = req.query;
     const daysAgo = new Date();
     daysAgo.setDate(daysAgo.getDate() - parseInt(period));
@@ -88,7 +122,7 @@ router.get('/analytics', protect, async (req, res) => {
 
     moods.forEach(mood => {
       emotionCounts[mood.emotion] = (emotionCounts[mood.emotion] || 0) + 1;
-      totalIntensity += mood.intensity;
+      totalIntensity += mood.intensity || 0;
     });
 
     const averageIntensity = moods.length > 0 ? (totalIntensity / moods.length).toFixed(2) : 0;
@@ -104,6 +138,7 @@ router.get('/analytics', protect, async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error fetching mood analytics:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching mood analytics',
@@ -117,6 +152,14 @@ router.get('/analytics', protect, async (req, res) => {
 // @access  Private
 router.delete('/:id', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const mood = await Mood.findById(req.params.id);
 
     if (!mood) {
@@ -140,6 +183,7 @@ router.delete('/:id', protect, async (req, res) => {
       message: 'Mood entry deleted successfully'
     });
   } catch (error) {
+    console.error('Error deleting mood:', error);
     res.status(500).json({
       success: false,
       message: 'Error deleting mood entry',

@@ -1,8 +1,49 @@
 {
-  "dependencies": {
-    "firebase": "^12.6.0",
-    "mongodb": "^7.0.0",
-    "react-hot-toast": "^2.6.0",
-    "react-icons": "^5.5.0"
+  "name": "neuroverse-2.0",
+  "version": "2.0.0",
+  "description": "A comprehensive mental wellness web application with mood tracking, goals, journaling, and AI-powered support",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "build:frontend": "cd frontend && npm run build",
+    "start:backend": "cd backend && npm start",
+    "clean": "rm -rf backend/node_modules frontend/node_modules node_modules",
+    "setup": "npm run install:all"
+  },
+  "keywords": [
+    "mental-health",
+    "wellness",
+    "mood-tracking",
+    "goals",
+    "journaling",
+    "ai-chatbot",
+    "react",
+    "nodejs",
+    "mongodb",
+    "firebase"
+  ],
+  "author": {
+    "name": "NeuroVerse Team",
+    "email": "contact@neuroverse.app"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/23scse1040541/NeuroVerse2.0.git"
+  },
+  "bugs": {
+    "url": "https://github.com/23scse1040541/NeuroVerse2.0/issues"
+  },
+  "homepage": "https://neuroversemind.netlify.app",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   }
 }

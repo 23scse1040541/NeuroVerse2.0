@@ -4,7 +4,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 
 // Pages
 import HomePage from './pages/HomePage';
-import Login from './components/auth/Login';
+import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import MoodTracker from './pages/MoodTracker';

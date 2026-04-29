@@ -9,7 +9,30 @@ const router = express.Router();
 // @access  Private
 router.post('/', protect, async (req, res) => {
   try {
-    const { title, description, category, targetFrequency, frequencyUnit, endDate, reminders } = req.body;
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
+    const { title, description, category, targetFrequency, frequencyUnit, endDate, deadline, reminders } = req.body;
+
+    // Validate required fields
+    if (!title) {
+      return res.status(400).json({
+        success: false,
+        message: 'Title is required'
+      });
+    }
+
+    if (!targetFrequency || targetFrequency < 1) {
+      return res.status(400).json({
+        success: false,
+        message: 'Target frequency must be at least 1'
+      });
+    }
 
     const goal = await Goal.create({
       user: req.user._id,
@@ -18,7 +41,7 @@ router.post('/', protect, async (req, res) => {
       category,
       targetFrequency,
       frequencyUnit,
-      endDate,
+      endDate: endDate || deadline,
       reminders
     });
 
@@ -28,6 +51,7 @@ router.post('/', protect, async (req, res) => {
       goal
     });
   } catch (error) {
+    console.error('Error creating goal:', error);
     res.status(500).json({
       success: false,
       message: 'Error creating goal',
@@ -41,6 +65,14 @@ router.post('/', protect, async (req, res) => {
 // @access  Private
 router.get('/', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const { status } = req.query;
     let query = { user: req.user._id };
     
@@ -54,6 +86,7 @@ router.get('/', protect, async (req, res) => {
       goals
     });
   } catch (error) {
+    console.error('Error fetching goals:', error);
     res.status(500).json({
       success: false,
       message: 'Error fetching goals',
@@ -67,6 +100,14 @@ router.get('/', protect, async (req, res) => {
 // @access  Private
 router.put('/:id/progress', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const goal = await Goal.findById(req.params.id);
 
     if (!goal) {
@@ -114,6 +155,7 @@ router.put('/:id/progress', protect, async (req, res) => {
       goal
     });
   } catch (error) {
+    console.error('Error updating progress:', error);
     res.status(500).json({
       success: false,
       message: 'Error updating progress',
@@ -127,6 +169,14 @@ router.put('/:id/progress', protect, async (req, res) => {
 // @access  Private
 router.put('/:id', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     let goal = await Goal.findById(req.params.id);
 
     if (!goal) {
@@ -155,6 +205,7 @@ router.put('/:id', protect, async (req, res) => {
       goal
     });
   } catch (error) {
+    console.error('Error updating goal:', error);
     res.status(500).json({
       success: false,
       message: 'Error updating goal',
@@ -168,6 +219,14 @@ router.put('/:id', protect, async (req, res) => {
 // @access  Private
 router.delete('/:id', protect, async (req, res) => {
   try {
+    // Validate req.user exists
+    if (!req.user || !req.user._id) {
+      return res.status(401).json({
+        success: false,
+        message: 'Authentication required'
+      });
+    }
+
     const goal = await Goal.findById(req.params.id);
 
     if (!goal) {
@@ -191,6 +250,7 @@ router.delete('/:id', protect, async (req, res) => {
       message: 'Goal deleted successfully'
     });
   } catch (error) {
+    console.error('Error deleting goal:', error);
     res.status(500).json({
       success: false,
       message: 'Error deleting goal',

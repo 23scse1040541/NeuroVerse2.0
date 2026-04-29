@@ -3,12 +3,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
-import { UserPlus, Mail, Lock, Brain, Sparkles, ArrowRight, CheckCircle, Heart, Target } from 'lucide-react';
+import { UserPlus, Mail, Lock, Brain, Sparkles, ArrowRight, CheckCircle, Heart, Target, Eye, EyeOff } from 'lucide-react';
 
 export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup, googleSignIn } = useAuth();

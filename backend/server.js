@@ -20,6 +20,26 @@ dotenv.config({ override: true });
 
 const app = express();
 
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
+  next();
+});
+
+// Async error handler wrapper
+const asyncHandler = (fn) => (req, res, next) => {
+  Promise.resolve(fn(req, res, next)).catch(next);
+};
+
+// Global error handler for async routes
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+});
+
 // Middleware
 const corsOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
@@ -61,16 +81,34 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// API Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/mood', moodRoutes);
-app.use('/api/journal', journalRoutes);
-app.use('/api/goals', goalRoutes);
-app.use('/api/feedback', feedbackRoutes);
-app.use('/api/specialists', specialistRoutes);
-app.use('/api/chatbot', chatbotRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/kahaniyan', kahaniyanRoutes);
+// API Routes - wrap with error handling
+try {
+  app.use('/api/auth', authRoutes);
+  app.use('/api/mood', moodRoutes);
+  app.use('/api/journal', journalRoutes);
+  app.use('/api/goals', goalRoutes);
+  app.use('/api/feedback', feedbackRoutes);
+  app.use('/api/specialists', specialistRoutes);
+  
+  // Chatbot routes might fail if HuggingFace not configured - wrap in try-catch
+  try {
+    app.use('/api/chatbot', chatbotRoutes);
+  } catch (chatbotError) {
+    console.warn('⚠️ Chatbot routes not loaded:', chatbotError.message);
+    app.use('/api/chatbot', (req, res) => {
+      res.status(503).json({
+        success: false,
+        message: 'Chatbot service temporarily unavailable'
+      });
+    });
+  }
+  
+  app.use('/api/users', userRoutes);
+  app.use('/api/kahaniyan', kahaniyanRoutes);
+  console.log('✅ All API routes loaded successfully');
+} catch (routeError) {
+  console.error('❌ Error loading routes:', routeError);
+}
 
 // Welcome route
 app.get('/', (req, res) => {
@@ -83,13 +121,56 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
+// Error handling middleware - must be last
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
+  console.error('❌ ERROR:', err);
+  console.error('Stack:', err.stack);
+  
+  // Don't crash on common errors
+  const isDev = process.env.NODE_ENV === 'development';
+  
+  // Mongoose validation error
+  if (err.name === 'ValidationError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Validation Error',
+      errors: Object.values(err.errors).map(e => e.message),
+      error: isDev ? err.message : undefined
+    });
+  }
+  
+  // Mongoose duplicate key error
+  if (err.code === 11000) {
+    return res.status(409).json({
+      success: false,
+      message: 'Duplicate entry found',
+      error: isDev ? err.message : undefined
+    });
+  }
+  
+  // Mongoose cast error (invalid ObjectId)
+  if (err.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      message: `Invalid ${err.path}: ${err.value}`,
+      error: isDev ? err.message : undefined
+    });
+  }
+  
+  // JWT errors
+  if (err.name === 'JsonWebTokenError') {
+    return res.status(401).json({
+      success: false,
+      message: 'Invalid token',
+      error: isDev ? err.message : undefined
+    });
+  }
+  
+  // Default 500 error
+  res.status(err.status || 500).json({
     success: false,
-    message: 'Internal Server Error',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+    message: err.message || 'Internal Server Error',
+    error: isDev ? err.stack : undefined
   });
 });
 

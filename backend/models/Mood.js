@@ -29,7 +29,7 @@ const moodSchema = new mongoose.Schema({
   },
   source: {
     type: String,
-    enum: ['micro-reflection', 'manual', 'imported'],
+    enum: ['micro-reflection', 'manual', 'imported', 'questionnaire', 'camera'],
     default: 'micro-reflection'
   },
   challengeType: {

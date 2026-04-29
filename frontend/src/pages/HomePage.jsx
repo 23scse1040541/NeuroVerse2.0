@@ -44,19 +44,19 @@ const HomePage = () => {
 
   const testimonials = [
     {
-      name: 'Sarah M.',
+      name: 'Aditya Kanujia',
       role: 'Software Developer',
       content: 'Neuro Verse helped me understand my stress patterns. The mood tracking is incredibly insightful!',
       rating: 5
     },
     {
-      name: 'Michael R.',
+      name: 'Raj Mishra.',
       role: 'College Student',
       content: 'The journaling feature is therapeutic. I love how I can track my mental wellness journey.',
       rating: 5
     },
     {
-      name: 'Emily K.',
+      name: 'Vaibhav Pandey',
       role: 'Teacher',
       content: 'The mindfulness exercises have become part of my daily routine. Highly recommend!',
       rating: 5
@@ -156,9 +156,9 @@ const HomePage = () => {
                   className="card group cursor-pointer neuro-hologram-hover"
                 >
                   <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                    <Icon className="w-7 h-7 text-white" />
+                    <Icon className="w-7 h-7 text-black" />
                   </div>
-                  <h3 className="text-xl font-bold mb-2 text-slate-900">{feature.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-black">{feature.title}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{feature.description}</p>
                 </motion.div>
               );
@@ -266,7 +266,7 @@ const HomePage = () => {
           </p>
           <Link
             to="/signup"
-            className="inline-flex items-center space-x-2 bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all"
+            className="inline-flex items-center space-x-2 bg-black text-primary px-8 py-4 rounded-xl font-bold text-lg hover:shadow-2xl transform hover:-translate-y-1 transition-all"
           >
             <span>Get Started Free</span>
             <ArrowRight className="w-5 h-5" />
@@ -311,6 +311,9 @@ const HomePage = () => {
             <ul className="space-y-2 text-gray-400 text-sm">
               <li>support@neuroverse.ai</li>
               <li>+91-XXXXXXXXXX</li>
+              <li>founder: Utkarsh Pandey</li>
+              <li>co-founder: Aditya Kumar</li>
+              <li>co-founder: Vaibhav Mishra</li>
             </ul>
             <div className="flex space-x-3 mt-4">
               <a href="#" className="hover:text-primary transition-colors">Instagram</a>

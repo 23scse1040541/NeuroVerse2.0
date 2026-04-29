@@ -25,11 +25,11 @@ const Card = ({ children, className = '', onClick }) => (
 
 const Button = ({ children, onClick, variant = 'primary', disabled, className = '' }) => {
   const variants = {
-    primary: 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg',
-    secondary: 'bg-gray-100 text-gray-700 hover:bg-gray-200',
+    primary: 'bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:shadow-lg hover:shadow-cyan-500/25',
+    secondary: 'bg-white/10 text-white hover:bg-white/20 border border-white/20',
     danger: 'bg-gradient-to-r from-red-500 to-pink-500 text-white',
     success: 'bg-gradient-to-r from-green-500 to-emerald-500 text-white',
-    outline: 'border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50',
+    outline: 'border-2 border-cyan-500 text-cyan-400 hover:bg-cyan-500/10',
   };
   return (
     <motion.button
@@ -46,17 +46,17 @@ const Button = ({ children, onClick, variant = 'primary', disabled, className = 
 
 const ProgressBar = ({ value, max, color = 'indigo', label }) => {
   const colors = {
-    indigo: 'bg-indigo-600',
-    green: 'bg-green-500',
+    indigo: 'bg-cyan-500',
+    green: 'bg-emerald-500',
     purple: 'bg-purple-500',
     red: 'bg-red-500',
-    yellow: 'bg-yellow-500',
+    yellow: 'bg-amber-500',
   };
   const percentage = Math.min(100, (value / max) * 100);
   return (
     <div className="w-full">
-      {label && <div className="flex justify-between text-sm mb-1"><span>{label}</span><span>{value}/{max}</span></div>}
-      <div className="w-full bg-gray-200 rounded-full h-3">
+      {label && <div className="flex justify-between text-sm mb-1 text-white/80"><span>{label}</span><span>{value}/{max}</span></div>}
+      <div className="w-full bg-white/10 rounded-full h-3">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
@@ -177,19 +177,19 @@ const LogicPuzzle = ({ difficulty, riskLevel, onComplete, onFail }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
-          <Clock className="w-5 h-5 text-indigo-600" />
-          <span className={`font-mono text-xl font-bold ${timeLeft < 10 ? 'text-red-500' : 'text-gray-700'}`}>
+          <Clock className="w-5 h-5 text-cyan-400" />
+          <span className={`font-mono text-xl font-bold ${timeLeft < 10 ? 'text-red-400' : 'text-white'}`}>
             {timeLeft}s
           </span>
         </div>
         <div className="flex items-center gap-2">
-          <Star className="w-5 h-5 text-yellow-500" />
-          <span className="font-bold">{puzzle.points} pts</span>
+          <Star className="w-5 h-5 text-yellow-400" />
+          <span className="font-bold text-white">{puzzle.points} pts</span>
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">{puzzle.question}</h3>
+      <div className="bg-slate-800/80 p-6 rounded-xl border border-white/10">
+        <h3 className="text-xl font-bold text-white mb-4 leading-relaxed">{puzzle.question}</h3>
       </div>
 
       <div className="grid gap-3">
@@ -200,16 +200,16 @@ const LogicPuzzle = ({ difficulty, riskLevel, onComplete, onFail }) => {
             whileTap={{ scale: selectedAnswer !== null ? 1 : 0.98 }}
             onClick={() => selectedAnswer === null && handleAnswer(idx)}
             disabled={selectedAnswer !== null}
-            className={`p-4 rounded-xl text-left font-medium transition-all ${
+            className={`p-4 rounded-xl text-left font-semibold text-white transition-all ${
               selectedAnswer === null
-                ? 'bg-white hover:bg-indigo-50 border-2 border-gray-200 hover:border-indigo-300'
+                ? 'bg-slate-700/80 hover:bg-slate-600 border-2 border-white/20 hover:border-cyan-400'
                 : selectedAnswer === idx
                   ? idx === puzzle.correct
-                    ? 'bg-green-100 border-2 border-green-500 text-green-700'
-                    : 'bg-red-100 border-2 border-red-500 text-red-700'
+                    ? 'bg-emerald-500/30 border-2 border-emerald-400 text-emerald-300'
+                    : 'bg-red-500/30 border-2 border-red-400 text-red-300'
                   : idx === puzzle.correct
-                    ? 'bg-green-100 border-2 border-green-500 text-green-700'
-                    : 'bg-gray-100 border-2 border-gray-200'
+                    ? 'bg-emerald-500/30 border-2 border-emerald-400 text-emerald-300'
+                    : 'bg-slate-800/50 border-2 border-white/10 text-white/50'
             }`}
           >
             {option}
@@ -220,7 +220,7 @@ const LogicPuzzle = ({ difficulty, riskLevel, onComplete, onFail }) => {
       {!selectedAnswer && (
         <button
           onClick={() => setShowHint(true)}
-          className="flex items-center gap-2 text-indigo-600 hover:text-indigo-800"
+          className="flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold transition-colors"
         >
           <Lightbulb className="w-4 h-4" />
           Need a hint? (-10 pts)
@@ -231,9 +231,9 @@ const LogicPuzzle = ({ difficulty, riskLevel, onComplete, onFail }) => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-r-xl"
+          className="bg-cyan-500/10 border-l-4 border-cyan-400 p-4 rounded-r-xl"
         >
-          <p className="text-yellow-800">💡 {puzzle.hint}</p>
+          <p className="text-cyan-300 font-medium">💡 {puzzle.hint}</p>
         </motion.div>
       )}
     </div>
@@ -316,23 +316,23 @@ const PatternDecoder = ({ difficulty, riskLevel, onComplete, onFail }) => {
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
-            <Clock className="w-5 h-5 text-indigo-600" />
-            <span className={`font-mono text-xl font-bold ${timeLeft < 5 ? 'text-red-500' : 'text-gray-700'}`}>
+            <Clock className="w-5 h-5 text-cyan-400" />
+            <span className={`font-mono text-xl font-bold ${timeLeft < 5 ? 'text-red-400' : 'text-white'}`}>
               {timeLeft}s
             </span>
           </div>
           {streak > 0 && (
-            <div className="flex items-center gap-1 text-orange-500">
+            <div className="flex items-center gap-1 text-orange-400">
               <Flame className="w-5 h-5" />
               <span className="font-bold">{streak}x</span>
             </div>
           )}
         </div>
-        <div className="text-gray-500">Streak: {streak}</div>
+        <div className="text-white font-semibold">Streak: {streak}</div>
       </div>
 
-      <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-8 rounded-xl">
-        <p className="text-center text-gray-600 mb-2">What comes next?</p>
+      <div className="bg-slate-800/80 p-8 rounded-xl border border-white/10">
+        <p className="text-center text-white/80 mb-4 text-lg">What comes next?</p>
         <div className="flex justify-center items-center gap-4">
           {sequence.map((num, idx) => (
             <motion.div
@@ -340,7 +340,7 @@ const PatternDecoder = ({ difficulty, riskLevel, onComplete, onFail }) => {
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: idx * 0.1 }}
-              className="w-16 h-16 bg-white rounded-xl shadow-md flex items-center justify-center text-2xl font-bold text-indigo-600"
+              className="w-16 h-16 bg-slate-700 rounded-xl border border-white/20 flex items-center justify-center text-2xl font-bold text-cyan-400"
             >
               {num}
             </motion.div>
@@ -348,7 +348,7 @@ const PatternDecoder = ({ difficulty, riskLevel, onComplete, onFail }) => {
           <motion.div
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ repeat: Infinity, duration: 1 }}
-            className="w-16 h-16 bg-indigo-100 rounded-xl flex items-center justify-center text-2xl"
+            className="w-16 h-16 bg-cyan-500/20 rounded-xl border-2 border-cyan-400 flex items-center justify-center text-2xl text-cyan-400 font-bold"
           >
             ?
           </motion.div>
@@ -363,16 +363,16 @@ const PatternDecoder = ({ difficulty, riskLevel, onComplete, onFail }) => {
             whileTap={{ scale: selected !== null ? 1 : 0.95 }}
             onClick={() => selected === null && handleSelect(opt)}
             disabled={selected !== null}
-            className={`p-6 rounded-xl text-2xl font-bold transition-all ${
+            className={`p-6 rounded-xl text-2xl font-bold text-white transition-all ${
               selected === null
-                ? 'bg-white hover:bg-purple-50 border-2 border-gray-200 hover:border-purple-300 shadow-sm'
+                ? 'bg-slate-700 hover:bg-slate-600 border-2 border-white/20 hover:border-cyan-400'
                 : selected === opt
                   ? opt === correctAnswer
-                    ? 'bg-green-100 border-2 border-green-500 text-green-700'
-                    : 'bg-red-100 border-2 border-red-500 text-red-700'
+                    ? 'bg-emerald-500/30 border-2 border-emerald-400 text-emerald-300'
+                    : 'bg-red-500/30 border-2 border-red-400 text-red-300'
                   : opt === correctAnswer
-                    ? 'bg-green-100 border-2 border-green-500 text-green-700'
-                    : 'bg-gray-100 border-2 border-gray-200'
+                    ? 'bg-emerald-500/30 border-2 border-emerald-400 text-emerald-300'
+                    : 'bg-slate-800/50 border-2 border-white/10 text-white/50'
             }`}
           >
             {opt}
@@ -456,17 +456,17 @@ const MemoryMatrix = ({ difficulty, riskLevel, onComplete, onFail }) => {
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4">
-          <span className="text-lg font-bold">Level {level}</span>
+          <span className="text-lg font-bold text-white">Level {level}</span>
           <div className="flex gap-1">
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className={`w-8 h-3 rounded-full ${i < lives ? 'bg-red-500' : 'bg-gray-200'}`}
+                className={`w-8 h-3 rounded-full ${i < lives ? 'bg-red-500' : 'bg-slate-700'}`}
               />
             ))}
           </div>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-white/80 font-medium">
           {showPattern ? 'Memorize the pattern!' : `Find ${patternCells.filter(p => !selectedCells.includes(p)).length} more`}
         </div>
       </div>
@@ -492,8 +492,8 @@ const MemoryMatrix = ({ difficulty, riskLevel, onComplete, onFail }) => {
                 isWrong
                   ? 'bg-red-500'
                   : showActive
-                    ? 'bg-indigo-500 shadow-lg shadow-indigo-300'
-                    : 'bg-gray-100 hover:bg-gray-200'
+                    ? 'bg-cyan-500 shadow-lg shadow-cyan-500/30'
+                    : 'bg-slate-700 hover:bg-slate-600 border border-white/10'
               }`}
             >
               {isWrong && <XCircle className="w-8 h-8 text-white mx-auto" />}
@@ -503,7 +503,7 @@ const MemoryMatrix = ({ difficulty, riskLevel, onComplete, onFail }) => {
       </div>
 
       {showPattern && (
-        <div className="text-center text-indigo-600 font-semibold animate-pulse">
+        <div className="text-center text-cyan-400 font-semibold animate-pulse">
           Memorizing... ⌛
         </div>
       )}
@@ -597,18 +597,18 @@ export default function Games() {
 
   if (activeGame) {
     return (
-      <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-indigo-50 to-purple-50">
+      <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
             <Button variant="secondary" onClick={() => setActiveGame(null)}>
               ← Back
             </Button>
             <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600 capitalize">{selectedDifficulty}</span>
+              <span className="text-sm text-white/60 capitalize">{selectedDifficulty}</span>
               <span className={`px-3 py-1 rounded-full text-sm font-semibold ${
-                selectedRisk === 'Safe' ? 'bg-green-100 text-green-700' :
-                selectedRisk === 'Risky' ? 'bg-yellow-100 text-yellow-700' :
-                'bg-red-100 text-red-700'
+                selectedRisk === 'Safe' ? 'bg-green-500/20 text-green-400' :
+                selectedRisk === 'Risky' ? 'bg-yellow-500/20 text-yellow-400' :
+                'bg-red-500/20 text-red-400'
               }`}>
                 {selectedRisk}
               </span>
@@ -667,8 +667,8 @@ export default function Games() {
 
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card>
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Target className="w-5 h-5" /> Difficulty
+            <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+              <Target className="w-5 h-5 text-cyan-400" /> Difficulty
             </h3>
             <div className="flex gap-2 flex-wrap">
               {['beginner', 'intermediate', 'advanced', 'expert'].map((diff) => (
@@ -677,8 +677,8 @@ export default function Games() {
                   onClick={() => setSelectedDifficulty(diff)}
                   className={`px-4 py-2 rounded-lg font-medium capitalize transition-all ${
                     selectedDifficulty === diff
-                      ? 'bg-indigo-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-cyan-500 text-white'
+                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/20'
                   }`}
                 >
                   {diff}
@@ -688,8 +688,8 @@ export default function Games() {
           </Card>
 
           <Card>
-            <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
-              <Shield className="w-5 h-5" /> Risk Level
+            <h3 className="font-bold text-white mb-4 flex items-center gap-2">
+              <Shield className="w-5 h-5 text-cyan-400" /> Risk Level
             </h3>
             <div className="flex gap-2 flex-wrap">
               {['Safe', 'Risky', 'High Stakes'].map((risk) => (
@@ -701,7 +701,7 @@ export default function Games() {
                       ? risk === 'Safe' ? 'bg-green-500 text-white' :
                         risk === 'Risky' ? 'bg-yellow-500 text-white' :
                         'bg-red-500 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-white/10 text-white/70 hover:bg-white/20 border border-white/20'
                   }`}
                 >
                   {risk}

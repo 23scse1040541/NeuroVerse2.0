@@ -27,7 +27,7 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/chatbot", {
+      const res = await fetch("https://neuroverse2-0-3.onrender.com/api/chatbot", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"

@@ -34,7 +34,7 @@ const Feedback = () => {
         toast.error('Please log in to submit feedback');
         return;
       }
-      await axios.post('/api/feedback', formData, {
+      await axios.post('https://neuroverse2-0-3.onrender.com/api/feedback', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Thank you for your feedback!');

@@ -126,7 +126,7 @@ const Specialists = () => {
 
   const fetchSpecialists = async () => {
     try {
-      const response = await axios.get('/api/specialists');
+      const response = await axios.get('https://neuroverse2-0-3.onrender.com/api/specialists');
       if (response.data.specialists?.length > 0) {
         setSpecialists(response.data.specialists);
       }

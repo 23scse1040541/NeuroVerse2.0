@@ -38,7 +38,7 @@ const Dashboard = () => {
     } catch (error) {
       try {
         const token = localStorage.getItem('token');
-        const moodsRes = await axios.get('/api/mood', {
+        const moodsRes = await axios.get('https://neuroverse2-0-3.onrender.com/api/mood', {
           headers: token ? { Authorization: `Bearer ${token}` } : undefined
         });
         const moods = moodsRes.data.moods || [];

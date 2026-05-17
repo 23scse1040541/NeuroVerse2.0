@@ -8,7 +8,7 @@ import {
   Filter, MoreHorizontal
 } from 'lucide-react';
 
-const API_URL = '/api/goals';
+const API_URL = 'https://neuroverse2-0-3.onrender.com/api/goals';
 
 const Goals = () => {
   const [goals, setGoals] = useState([]);

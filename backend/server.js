@@ -20,68 +20,122 @@ dotenv.config({ override: true });
 
 const app = express();
 
-// Request logging middleware
+/* =========================
+   REQUEST LOGGER
+========================= */
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
 });
 
-// Async error handler wrapper
-const asyncHandler = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
+/* =========================
+   CORS CONFIGURATION
+========================= */
 
-// Global error handler for async routes
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-});
-
-// Middleware
 const corsOrigins = (process.env.CORS_ORIGIN || '')
   .split(',')
-  .map((s) => s.trim())
+  .map((origin) => origin.trim())
   .filter(Boolean);
 
-const defaultDevOrigins = ['http://localhost:3000', 'http://127.0.0.1:3000'];
-const allowedOrigins = corsOrigins.length ? corsOrigins : defaultDevOrigins;
+const defaultOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'https://neuroversemind.netlify.app',
+];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      if (process.env.NODE_ENV !== 'production' && origin.endsWith(':3000')) {
-        return callback(null, true);
-      }
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-      return callback(new Error(`CORS blocked for origin: ${origin}`));
-    },
-    credentials: true,
-  })
-);
+const allowedOrigins = corsOrigins.length
+  ? corsOrigins
+  : defaultOrigins;
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin
+    // (mobile apps, Postman, server-to-server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.error(`❌ CORS Blocked Origin: ${origin}`);
+
+    return callback(
+      new Error(`CORS blocked for origin: ${origin}`)
+    );
+  },
+
+  credentials: true,
+
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With',
+  ],
+};
+
+// Apply CORS
+app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
+
+/* =========================
+   BODY PARSERS
+========================= */
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Health check endpoint
+/* =========================
+   GLOBAL ERROR HANDLERS
+========================= */
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('❌ Unhandled Rejection:', reason);
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('❌ Uncaught Exception:', error);
+});
+
+/* =========================
+   HEALTH CHECK
+========================= */
+
 app.get('/api/health', async (req, res) => {
-  const dbStatus = mongoose.connection.readyState === 1 ? 'connected' : 'disconnected';
-  const hasMongoUri = Boolean(process.env.MONGODB_URI || process.env.MONGO_URI);
-  
+  const dbStatus =
+    mongoose.connection.readyState === 1
+      ? 'connected'
+      : 'disconnected';
+
+  const hasMongoUri = Boolean(
+    process.env.MONGODB_URI || process.env.MONGO_URI
+  );
+
   return res.status(200).json({
+    success: true,
     status: 'ok',
     timestamp: new Date().toISOString(),
+
     database: {
       status: dbStatus,
       url: hasMongoUri ? 'configured' : 'not configured',
     },
+
     environment: process.env.NODE_ENV || 'development',
   });
 });
 
-// API Routes - wrap with error handling
+/* =========================
+   API ROUTES
+========================= */
+
 try {
   app.use('/api/auth', authRoutes);
   app.use('/api/mood', moodRoutes);
@@ -89,136 +143,149 @@ try {
   app.use('/api/goals', goalRoutes);
   app.use('/api/feedback', feedbackRoutes);
   app.use('/api/specialists', specialistRoutes);
-  
-  // Chatbot routes might fail if HuggingFace not configured - wrap in try-catch
+  app.use('/api/users', userRoutes);
+  app.use('/api/kahaniyan', kahaniyanRoutes);
+
+  // Chatbot Routes
   try {
     app.use('/api/chatbot', chatbotRoutes);
   } catch (chatbotError) {
-    console.warn('⚠️ Chatbot routes not loaded:', chatbotError.message);
+    console.warn(
+      '⚠️ Chatbot routes not loaded:',
+      chatbotError.message
+    );
+
     app.use('/api/chatbot', (req, res) => {
       res.status(503).json({
         success: false,
-        message: 'Chatbot service temporarily unavailable'
+        message: 'Chatbot service temporarily unavailable',
       });
     });
   }
-  
-  app.use('/api/users', userRoutes);
-  app.use('/api/kahaniyan', kahaniyanRoutes);
+
   console.log('✅ All API routes loaded successfully');
 } catch (routeError) {
   console.error('❌ Error loading routes:', routeError);
 }
 
-// Welcome route
+/* =========================
+   ROOT ROUTE
+========================= */
+
 app.get('/', (req, res) => {
   res.json({
+    success: true,
     message: 'Welcome to Neuro Verse API',
     version: '1.0.0',
     status: 'Active',
-    documentation: '/api-docs',
-    healthCheck: '/api/health'
+    healthCheck: '/api/health',
   });
 });
 
-// Error handling middleware - must be last
+/* =========================
+   ERROR HANDLER
+========================= */
+
 app.use((err, req, res, next) => {
-  console.error('❌ ERROR:', err);
-  console.error('Stack:', err.stack);
-  
-  // Don't crash on common errors
+  console.error('❌ ERROR:', err.message);
+  console.error(err.stack);
+
   const isDev = process.env.NODE_ENV === 'development';
-  
-  // Mongoose validation error
+
+  // Validation Error
   if (err.name === 'ValidationError') {
     return res.status(400).json({
       success: false,
       message: 'Validation Error',
-      errors: Object.values(err.errors).map(e => e.message),
-      error: isDev ? err.message : undefined
+      errors: Object.values(err.errors).map((e) => e.message),
+      error: isDev ? err.message : undefined,
     });
   }
-  
-  // Mongoose duplicate key error
+
+  // Duplicate Key Error
   if (err.code === 11000) {
     return res.status(409).json({
       success: false,
       message: 'Duplicate entry found',
-      error: isDev ? err.message : undefined
+      error: isDev ? err.message : undefined,
     });
   }
-  
-  // Mongoose cast error (invalid ObjectId)
+
+  // Invalid Mongo ObjectId
   if (err.name === 'CastError') {
     return res.status(400).json({
       success: false,
       message: `Invalid ${err.path}: ${err.value}`,
-      error: isDev ? err.message : undefined
+      error: isDev ? err.message : undefined,
     });
   }
-  
-  // JWT errors
+
+  // JWT Error
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
       success: false,
       message: 'Invalid token',
-      error: isDev ? err.message : undefined
+      error: isDev ? err.message : undefined,
     });
   }
-  
-  // Default 500 error
+
+  // CORS Error
+  if (err.message.includes('CORS')) {
+    return res.status(403).json({
+      success: false,
+      message: err.message,
+    });
+  }
+
+  // Default Error
   res.status(err.status || 500).json({
     success: false,
     message: err.message || 'Internal Server Error',
-    error: isDev ? err.stack : undefined
+    error: isDev ? err.stack : undefined,
   });
 });
 
-// Connect to MongoDB and start server
+/* =========================
+   START SERVER
+========================= */
+
 const startServer = async () => {
   try {
-    // Connect to MongoDB
+    // Connect Database
     await connectDB();
-    
-    // Get port from environment or use 5000
+
+    // Port
     const PORT = process.env.PORT || 5000;
-    
-    // Start the server
+
+    // Start Express Server
     const server = app.listen(PORT, () => {
-      console.log(`\n🚀 Server is running on port ${PORT}`);
-      console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
-      console.log(`Database: ${process.env.MONGODB_URI ? 'Connected to MongoDB Atlas' : 'MongoDB URI not configured'}`);
+      console.log('\n🚀 Server Started Successfully');
+      console.log(`🌐 Port: ${PORT}`);
+      console.log(
+        `🛠 Environment: ${
+          process.env.NODE_ENV || 'development'
+        }`
+      );
+      console.log('✅ MongoDB Connected');
     });
 
-    // Handle unhandled promise rejections
-    process.on('unhandledRejection', (err) => {
-      console.error('UNHANDLED REJECTION! 💥 Shutting down...');
-      console.error(err);
-      server.close(() => {
-        process.exit(1);
-      });
-    });
+    /* =========================
+       GRACEFUL SHUTDOWN
+    ========================= */
 
-    // Handle uncaught exceptions
-    process.on('uncaughtException', (err) => {
-      console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
-      console.error(err);
-      process.exit(1);
-    });
-
-    // Handle SIGTERM for graceful shutdown
     process.on('SIGTERM', () => {
-      console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+      console.log('👋 SIGTERM RECEIVED');
+
       server.close(() => {
-        console.log('💥 Process terminated!');
+        console.log('💥 Server Closed');
+        process.exit(0);
       });
     });
-
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error('❌ Failed to start server:', error);
     process.exit(1);
   }
 };
 
-// Start the application
+// Start App
 startServer();

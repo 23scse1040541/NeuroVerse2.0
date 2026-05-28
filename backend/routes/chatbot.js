@@ -41,7 +41,7 @@ router.post('/', async (req, res) => {
     let result;
     try {
       result = await hf.chatCompletion({
-        model: "KevSun/mentalhealth_LM",
+       model: "Qwen/Qwen3-8B",
         messages: [
           {
             role: 'system',
